@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/course_management/db" VERSION="20130306" COMMENT="XMLDB file for Moodle blocks/course_management"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="cm_course" COMMENT="Course Management course table" NEXT="cm_enrollment">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="courseshort"/>
+        <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="id" NEXT="coursefull"/>
+        <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="courseshort" NEXT="instructor"/>
+        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="coursefull" NEXT="term"/>
+        <FIELD NAME="term" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="term"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="cm_enrollment" COMMENT="Course Management enrollment table" PREVIOUS="cm_course">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="username"/>
+        <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="username as it exists in users table" PREVIOUS="id" NEXT="courseshort"/>
+        <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="username"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
