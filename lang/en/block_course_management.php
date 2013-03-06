@@ -7,7 +7,7 @@
  */
 
  $string['blockname']   = 'Course Management';
- $string['pluginname']  = 'Course Management block';
+ $string['pluginname']  = 'Course Management';
  $string['cm']          = 'Course Management';
  $string['cmcreate']    = 'Create Course';
  $string['courselist']  = 'Available Courses';
