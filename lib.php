@@ -43,26 +43,16 @@ abstract class course_management extends cm_b {
        return ($t_list);
     } 
 
-//    public function get_course_list() {
-//        $c_list = array('Spring 2012 EDUC 112 001', 
-//                        'Spring 2012 EDUC 421 016', 
-//                        'Spring 2012 EDUC 421 018', 
-//                        'Spring 2012 EDUC 445 002');
-//        return ($c_list);
-//    }
-
     static function get_course_list() {
-        global $DB;
+        global $DB, $USER;
 
         // SELECT coursefull FROM mdl_cm_course WHERE instructor=$user AND active=0;
-        //get_records_select($table, $select, array $params=null, $sort='', $fields='*', $limitfrom=0, $limitnum=0
-
         // get_fieldset_select($table, $return, $select, array $params=null)
 
         $user = $USER->username; 
         $return = 'coursefull';
-        $select = 'instructor='.$user.' AND active=0';
-        $param = null; 
+        $select = '';
+        $param = array('instructor'=>$user , 'active'=>0); 
 
         $table = 'cm_course';
         
