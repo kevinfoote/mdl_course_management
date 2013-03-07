@@ -57,14 +57,16 @@ abstract class course_management extends cm_b {
         // SELECT coursefull FROM mdl_cm_course WHERE instructor=$user AND active=0;
         //get_records_select($table, $select, array $params=null, $sort='', $fields='*', $limitfrom=0, $limitnum=0
 
+        // get_fieldset_select($table, $return, $select, array $params=null)
+
         $user = $USER->username; 
-        $fields = 'coursefull';
+        $return = 'coursefull';
         $select = 'instructor='.$user.' AND active=0';
-        $param = array('instructor' => $user, 'active' => 0);
+        $param = null; 
 
         $table = 'cm_course';
         
-        $c_list = $DB->get_records_select($table, $select, '', '', $fields, '', '');
+        $c_list = $DB->get_fieldsset_select($table, $return, $select, $param);
         
         return ($c_list);
         
