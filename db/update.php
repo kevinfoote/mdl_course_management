@@ -3,12 +3,10 @@
 function xmldb_cm_upgrade($oldversion) {
     global $CFG;
     
-    $version = 2013020100;
- 
     $result = TRUE;
  
 // Insert PHP code from XMLDB Editor here
-if ($oldversion < $version) {
+if ($oldversion < 2013020100) {
 
         // Define table cm_course to be created
         $table = new xmldb_table('cm_course');
@@ -47,6 +45,29 @@ if ($oldversion < $version) {
 
         // course_management savepoint reached
         upgrade_block_savepoint(true, $version, 'course_management');
+    }
+
+ if ($oldversion < 2013020100.01) {
+
+        // Define table cm_term to be created
+        $table = new xmldb_table('cm_term');
+
+        // Adding fields to table cm_term
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('termcode', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('termname', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('active', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table cm_term
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for cm_term
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // course_management savepoint reached
+        upgrade_block_savepoint(true, XXXXXXXXXX, 'course_management');
     }
  
     return $result;

@@ -8,5 +8,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2013020100;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2013020100.01;     // The current plugin version (Date: YYYYMMDDxx.xx)
 $plugin->requires  = 2012120300.00;     // Requires this Moodle version

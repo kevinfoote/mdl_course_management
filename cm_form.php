@@ -11,9 +11,11 @@ class cm_form extends moodleform {
         global $CFG, $USER; 
 
         $available = course_management::_s('courselist');
-        // get course listing for user 
-        // mock
-        $course_list = course_management::get_course_list($USER->username);
+
+        //not using yet
+        $active_terms = course_management::get_term_list('short');
+        
+        $course_list = course_management::get_course_list();
 
         $mform =& $this->_form;
         

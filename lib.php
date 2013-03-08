@@ -36,15 +36,28 @@ abstract class course_management extends cm_b {
         return 'block_course_management';
     }
 
-    public function get_term_list() {
-       $t_list = array('Spring 2012 - 201250',
-                       'Summer 2012 - 201310',
-                       'Fall 2013 - 201340');
-       return ($t_list);
+    // get array of current terms 
+    //   incomming: string full OR short 
+    public function get_term_list($type) {
+        global $DB;
+
+        if ($type == 'full') {
+            $return = 'termname';
+        } else {
+            $return = 'termcode';
+        }
+        $select = '';
+        $param = array('active'=>1);
+        $table = 'cm_term';
+
+        $t_list = $DB->get_fieldset_select($table, $return, $select, $param);
+        return ($t_list);
     } 
 
-    static function get_course_list() {
+    // get array of courses that 
+    static function get_course_list_f($t) {
         global $DB, $USER;
+        $term = $t;
 
         // SELECT coursefull FROM mdl_cm_course WHERE instructor=$user AND active=0;
         // get_fieldset_select($table, $return, $select, array $params=null)
@@ -52,6 +65,7 @@ abstract class course_management extends cm_b {
         $user = $USER->username; 
         $return = 'coursefull';
         $select = '';
+        //$param = array('instructor'=>$user , 'termcode'=>$term , 'active'=>0); 
         $param = array('instructor'=>$user , 'active'=>0); 
 
         $table = 'cm_course';
@@ -59,13 +73,22 @@ abstract class course_management extends cm_b {
         $c_list = $DB->get_fieldsset_select($table, $return, $select, $param);
         
         return ($c_list);
-        
     }
-    
+
     static function get_enrollment($courseshort) {
         return ();
     }
     
-    
+    static function do_set_active($courseshort) {
+        return ();
+    }
+ 
+    static function do_make_cshell($enrollment, $courseshort) {
+        return ();
+    }
+ 
+    static function do_make_metashell($courseshort) {
+        return ();
+    }
 }
 ?>
