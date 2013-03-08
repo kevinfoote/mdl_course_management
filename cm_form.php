@@ -20,8 +20,8 @@ class cm_form extends moodleform {
         $mform->addElement('select', 'course', $available, $course_list);
 
         $buttons = array();
-        $buttons[] =& $mform->createElement('submit', 'create', course_management::_s('cmcreate'));
-        $buttons[] =& $mform->createElement('cancel');
+        $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
+        $buttons[] = &$mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
         $mform->addGroup($buttons, 'buttons', course_management::_s('action'), array(' '), false);
         //$mform->closeHeaderBefore('button');
     }

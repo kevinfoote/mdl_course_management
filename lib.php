@@ -61,5 +61,11 @@ abstract class course_management extends cm_b {
         return ($c_list);
         
     }
+    
+    static function get_enrollment($courseshort) {
+        return ();
+    }
+    
+    
 }
 ?>

@@ -10,6 +10,7 @@
  $string['pluginname']  = 'Course Management';
  $string['cm']          = 'Course Management';
  $string['cmcreate']    = 'Create Course';
+ $string['cmrevert']    = 'Clear';
  $string['courselist']  = 'Available Courses';
  $string['action']      = 'Action';
 
