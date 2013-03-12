@@ -54,8 +54,8 @@ abstract class course_management extends cm_b {
         return ($t_list);
     } 
 
-    // get array of courses that 
-    static function get_course_list_f($t) {
+    // get array of courses 
+    static function get_course_list($t) {
         global $DB, $USER;
         $term = $t;
 
@@ -70,25 +70,25 @@ abstract class course_management extends cm_b {
 
         $table = 'cm_course';
         
-        $c_list = $DB->get_fieldsset_select($table, $return, $select, $param);
+        $c_list = $DB->get_fieldset_select($table, $return, $select, $param);
         
         return ($c_list);
     }
 
     static function get_enrollment($courseshort) {
-        return ();
+        return;
     }
     
     static function do_set_active($courseshort) {
-        return ();
+        return;
     }
  
     static function do_make_cshell($enrollment, $courseshort) {
-        return ();
+        return;
     }
  
     static function do_make_metashell($courseshort) {
-        return ();
+        return;
     }
 }
 ?>

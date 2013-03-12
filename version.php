@@ -12,4 +12,4 @@ $plugin->version   = 2013031100;        // The current plugin version (Date: YYY
 
 $plugin->requires  = 2012120300.00;     // Requires this Moodle version
 
-$plugin->component = block_course_management;
+$plugin->component = 'block_course_management';
