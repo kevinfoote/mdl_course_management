@@ -17,7 +17,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="cm_enrollment" COMMENT="Course Management enrollment table" PREVIOUS="cm_course">
+    <TABLE NAME="cm_enrollment" COMMENT="Course Management enrollment table" PREVIOUS="cm_course" NEXT="cm_term">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="username"/>
         <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="username as it exists in users table" PREVIOUS="id" NEXT="courseshort"/>

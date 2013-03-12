@@ -13,7 +13,7 @@ class cm_form extends moodleform {
         $available = course_management::_s('courselist');
 
         //not using yet
-        $active_terms = course_management::get_term_list('short');
+        //$active_terms = course_management::get_term_list('short');
         
         $course_list = course_management::get_course_list();
 
