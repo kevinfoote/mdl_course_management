@@ -44,10 +44,10 @@ if ($oldversion < 2013020100) {
         }
 
         // course_management savepoint reached
-        upgrade_block_savepoint(true, $version, 'course_management');
+        upgrade_block_savepoint(true, 2013020100, 'course_management');
     }
 
- if ($oldversion < 2013020100.01) {
+ if ($oldversion < 2013031100) {
 
         // Define table cm_term to be created
         $table = new xmldb_table('cm_term');
@@ -67,7 +67,7 @@ if ($oldversion < 2013020100) {
         }
 
         // course_management savepoint reached
-        upgrade_block_savepoint(true, XXXXXXXXXX, 'course_management');
+        upgrade_block_savepoint(true, 2013031100, 'course_management');
     }
  
     return $result;
