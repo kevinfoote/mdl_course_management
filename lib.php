@@ -57,20 +57,19 @@ abstract class course_management extends cm_b {
     // get array of courses 
     static function get_course_list($t) {
         global $DB, $USER;
-        $term = $t;
+
+        $term = '201250';
+        $table = 'cm_course';
+        $user = $USER->username; 
 
         // SELECT coursefull FROM mdl_cm_course WHERE instructor=$user AND active=0;
         // get_fieldset_select($table, $return, $select, array $params=null)
 
-        $user = $USER->username; 
-        $return = 'coursefull';
-        $select = '';
-        //$param = array('instructor'=>$user , 'termcode'=>$term , 'active'=>0); 
-        $param = array('instructor'=>$user , 'active'=>0); 
-
-        $table = 'cm_course';
+        //$sql = 'SELECT coursefull FROM {cm_course} WHERE active = ? AND term = ? AND instructor = ?';
+        $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
+        $array = array(0,$term,$user);
         
-        $c_list = $DB->get_fieldset_select($table, $return, $select, $param);
+        $c_list = $DB->get_fieldset_sql($sql,$array);
         
         return ($c_list);
     }
