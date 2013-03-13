@@ -25,7 +25,10 @@ $site = get_system_context();
 if ($cm->is_cancelled()) {
     // cancelled forms redirect back to /my/
     redirect("$CFG->wwwroot/my/");
-} else { 
+} else if ($fromcm = $cm->get_data() { 
+    // DO data processing etc..
+    $fromform->
+} else {
     $blockname = course_management::_s('blockname');
     $header = course_management::_s('cmcreate');
 

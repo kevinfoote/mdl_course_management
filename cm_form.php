@@ -2,7 +2,7 @@
 /**
  * form for user to select term and course 
 */
-require_once("$CFG->libdir/formslib.php");
+require_once($CFG->libdir.'/formslib.php');
 require_once('lib.php');
 
 class cm_form extends moodleform {
