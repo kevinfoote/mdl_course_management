@@ -69,6 +69,21 @@ if ($oldversion < 2013020100) {
         // course_management savepoint reached
         upgrade_block_savepoint(true, 2013031100, 'course_management');
     }
+
+    if ($oldversion < XXXXXXXXXX) {
+
+        // Define field id to be added to cm_course
+        $table = new xmldb_table('cm_course');
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+
+        // Conditionally launch add field id
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // course_management savepoint reached
+        upgrade_block_savepoint(true, XXXXXXXXXX, 'course_management');
+    }
  
     return $result;
 }

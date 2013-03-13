@@ -6,10 +6,10 @@
   <TABLES>
     <TABLE NAME="cm_course" COMMENT="Course Management course table" NEXT="cm_enrollment">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="courseshort"/>
-        <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="id" NEXT="coursefull"/>
-        <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="courseshort" NEXT="instructor"/>
-        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="coursefull" NEXT="term"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="coursefull"/>
+        <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="id" NEXT="courseshort"/>
+        <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="coursefull" NEXT="instructor"/>
+        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseshort" NEXT="term"/>
         <FIELD NAME="term" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
         <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="term"/>
       </FIELDS>
