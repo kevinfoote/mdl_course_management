@@ -61,7 +61,7 @@ abstract class course_management extends cm_b {
     static function get_course_list($t) {
         global $DB, $USER;
 
-        $term = '201250';
+        $term = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
@@ -81,7 +81,7 @@ abstract class course_management extends cm_b {
     static function get_course_list_f($t) {
         global $DB, $USER;
 
-        $term = '201250';
+        $term = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
