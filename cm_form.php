@@ -18,6 +18,10 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
         
+        foreach ($course_menu as $id=>$course) {
+            $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)'201250'));
+        }
+        $this->add_checkbox_controller((int)'201250');
 
         $mform->addElement('select', 'course', $available, $course_list);
 
