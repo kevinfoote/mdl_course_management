@@ -12,18 +12,21 @@ class cm_form extends moodleform {
 
         $available = course_management::_s('courselist');
 
-        //not using yet
-        //$active_terms = course_management::get_term_list('short');
-        
+        $term_list = course_management::get_term_list('short');
         $course_menu = course_management::get_course_list_f();
         $course_list = course_management::get_course_list();
 
         $mform =& $this->_form;
         
+
         $mform->addElement('select', 'course', $available, $course_list);
 
-        foreach ($course_menu as $coursepr) {
-            echo $coursepr;
+        foreach ($term_list as $t) {
+            echo "$t ";
+        }
+        echo "<br>";
+        foreach ($course_menu as $id=>$val) {
+            echo "$id $val";
         }
         echo "<br>";
         foreach ($course_list as $course) {

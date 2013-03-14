@@ -41,16 +41,19 @@ abstract class course_management extends cm_b {
     public function get_term_list($type) {
         global $DB;
 
+        $table = 'cm_term';
+        $return = 'termcode';
+
         if ($type == 'full') {
             $return = 'termname';
-        } else {
+        } 
+        if ($type == 'short') {
             $return = 'termcode';
-        }
-        $select = '';
-        $param = array('active'=>1);
-        $table = 'cm_term';
+        } 
 
-        $t_list = $DB->get_fieldset_select($table, $return, $select, $param);
+        $sql = 'SELECT '.$return.' FROM {'.$table.'} WHERE active = ?';
+        $array = array(1);
+        $t_list = $DB->get_fieldset_sql($sql,$array);
         return ($t_list);
     } 
 
