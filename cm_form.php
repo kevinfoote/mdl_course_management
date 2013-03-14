@@ -15,11 +15,20 @@ class cm_form extends moodleform {
         //not using yet
         //$active_terms = course_management::get_term_list('short');
         
+        $course_menu = course_management::get_course_list_f();
         $course_list = course_management::get_course_list();
 
         $mform =& $this->_form;
         
         $mform->addElement('select', 'course', $available, $course_list);
+
+        foreach ($course_menu as $coursepr) {
+            echo $coursepr;
+        }
+        echo "<br>";
+        foreach ($course_list as $course) {
+            echo $course;
+        }
 
         $buttons = array();
         $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
