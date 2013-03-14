@@ -7,10 +7,10 @@ require_once('lib.php');
 
 class cm_form extends moodleform {
 
-    $CM_DEBUG=TRUE;
 
     function definition() {
         global $CFG, $USER; 
+        $CM_DEBUG=TRUE;
 
         $available = course_management::_s('courselist');
 
