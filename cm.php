@@ -65,6 +65,7 @@ if ($cm->is_cancelled()) {
     echo $OUTPUT->footer();
 
 } else {
+    
     $blockname = course_management::_s('blockname');
     $header = course_management::_s('cmcreate');
 

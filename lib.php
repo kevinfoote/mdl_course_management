@@ -57,6 +57,20 @@ abstract class course_management extends cm_b {
         return ($t_list);
     } 
 
+    // get the full name of the term from cm_term
+    //   in: termcode
+    //   return: termname
+    public function get_term_name($t) {
+        global $DB;
+        
+        $table = 'cm_term';
+        $sql = 'SELECT termname FROM {'.$table.'} WHERE termcode = ?';
+        $array = array($t);
+
+        $tname = $DB->get_record_sql($sql,$array);
+        return ($tname);
+    }
+
     // get array of courses 
     static function get_course_list($t) {
         global $DB, $USER;

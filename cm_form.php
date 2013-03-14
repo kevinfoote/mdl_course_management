@@ -7,6 +7,8 @@ require_once('lib.php');
 
 class cm_form extends moodleform {
 
+    $CM_DEBUG=TRUE;
+
     function definition() {
         global $CFG, $USER; 
 
@@ -18,23 +20,28 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
         
-        foreach ($course_menu as $id=>$course) {
-            $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)'201250'));
+        foreach ($term_list as $term) {
+            $course_menu = course_management::get_course_list_f($term);
+            $mform->addElement('static','','label',
+                                course_management::get_term_name($term));
+            foreach ($course_menu as $id=>$course) {
+                $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)$term));
+            }
         }
         $this->add_checkbox_controller((int)'201250');
 
-        $mform->addElement('select', 'course', $available, $course_list);
-
-        foreach ($term_list as $t) {
-            echo "$t ";
-        }
-        echo "<br>";
-        foreach ($course_menu as $id=>$val) {
-            echo "$id $val";
-        }
-        echo "<br>";
-        foreach ($course_list as $course) {
-            echo $course;
+        if($CM_DEBUG) {
+            foreach ($term_list as $t) {
+                echo "$t ";
+            }
+            echo "<br>";
+            foreach ($course_menu as $id=>$val) {
+                echo "$id $val";
+            }
+            echo "<br>";
+            foreach ($course_list as $course) {
+                echo $course;
+            }
         }
 
         $buttons = array();
