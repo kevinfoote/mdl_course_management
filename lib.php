@@ -67,7 +67,7 @@ abstract class course_management extends cm_b {
         $sql = 'SELECT termname FROM {'.$table.'} WHERE termcode = ?';
         $array = array($t);
 
-        $tname = $DB->get_record_sql($sql,$array);
+        $tname = $DB->get_field_sql($sql,$array);
         return ($tname);
     }
 
