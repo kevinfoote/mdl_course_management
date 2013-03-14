@@ -21,14 +21,17 @@ class cm_form extends moodleform {
         $mform =& $this->_form;
         
         foreach ($term_list as $term) {
+            $termname = course_management::get_term_name($term);
+            $table_html = '<table border="1" cellspacing="0" cellpadding="0">'
+                 .'<tr><th align="left">'.$termname.'</th></tr>'
+                 .'</table>';
             $course_menu = course_management::get_course_list_f($term);
-            $mform->addElement('static','','label',
-                                course_management::get_term_name($term));
+            $mform->addElement('html', $table_html);
             foreach ($course_menu as $id=>$course) {
                 $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)$term));
             }
+            $this->add_checkbox_controller((int)$term);
         }
-        $this->add_checkbox_controller((int)'201250');
 
         if($CM_DEBUG) {
             foreach ($term_list as $t) {
