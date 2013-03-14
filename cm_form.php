@@ -13,8 +13,8 @@ class cm_form extends moodleform {
         $available = course_management::_s('courselist');
 
         $term_list = course_management::get_term_list('short');
-        $course_menu = course_management::get_course_list_f();
-        $course_list = course_management::get_course_list();
+        $course_menu = course_management::get_course_list_f('201250');
+        $course_list = course_management::get_course_list('201250');
 
         $mform =& $this->_form;
         
