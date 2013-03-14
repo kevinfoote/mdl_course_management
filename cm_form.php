@@ -17,23 +17,16 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $html_table = '<table align="center" border="1" cellspacing="0" cellpadding="0">';
-        $mform->addElement('html',$html_table);
-        
         foreach ($term_list as $term) {
             $termname = course_management::get_term_name($term);
             $course_menu = course_management::get_course_list_f($term);
-            $table_row = '<tr><th align="left">'.$termname.'</th></tr>'
-                 .'<tr><td align="center">';
-            $mform->addElement('html', $table_row);
+            $term_heading = '&nbsp;&nbsp<b>Term :: '.$termname.'</b>';
+            $mform->addElement('html', $term_heading);
             foreach ($course_menu as $id=>$course) {
                 $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)$term));
             }
             $this->add_checkbox_controller((int)$term);
-            $mform->addElement('html','</td></tr>');
         }
-
-        $mform->addElement('html','</table>');
 
         if($CM_DEBUG) {
             foreach ($term_list as $t) {
@@ -53,7 +46,7 @@ class cm_form extends moodleform {
         $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
         $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
         $mform->addGroup($buttons, 'buttons', course_management::_s('action'), array(' '), false);
-        //$mform->closeHeaderBefore('button');
+        $mform->closeHeaderBefore('buttons');
     }
 }
 ?>
