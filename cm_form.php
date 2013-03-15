@@ -43,8 +43,6 @@ class cm_form extends moodleform {
             $mform->addElement('html' , '</div>');
         }
 
-        // end the form_div
-        $mform->addElement('html' , '</div>');
 
         if($CM_DEBUG) {
             foreach ($term_list as $t) {
@@ -63,7 +61,11 @@ class cm_form extends moodleform {
         $buttons = array();
         $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
         $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
-        $mform->addGroup($buttons, 'buttons', course_management::_s('action'), array(' '), false);
+        
+        $mform->addGroup($buttons, 'buttons', null, array(' '), false);
+        // end the form_div
+        $mform->addElement('html' , '</div>');
+        // TODO: meta-course form bits should go here
         $mform->closeHeaderBefore('buttons');
     }
 }
