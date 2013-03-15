@@ -17,24 +17,34 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
 
+        $form_div = '<div style="text-align:center;width: 40%">';
+
+        $mform->addElement('html' , $form_div);
+
         foreach ($term_list as $term) {
             $termname = course_management::get_term_name($term);
             $course_menu = course_management::get_course_list_f($term);
-            $term_heading = '<div style="text-align:left>'
-                           .'&nbsp;&nbsp<b>Term :: '.$termname.'</b>';
+            $term_heading = '<div style="text-align:left">'
+                           .'&nbsp;&nbsp;&nbsp;&nbsp;'
+                           .'<b>Term :: '.$termname.'</b>';
             $mform->addElement('html', $term_heading);
-            if count($course_menu < 1) {
-                $term_nocourse = course_management::_s('nocourse');
+
+            if (count($course_menu) < 1) {
+                $term_nocourse = '<br><br>'
+                    .'<div style="color:red;text-align:center">'
+                    .course_management::_s('nocourse').'</div>';
                 $mform->addElement('html' , $term_nocourse);
-                $mform->addElement('html' , '</div>'); 
             } else {
                 foreach ($course_menu as $id=>$course) {
                     $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)$term));
                 }
-                $mform->addElement('html' , '</div>'); 
                 $this->add_checkbox_controller((int)$term);
             }
+            $mform->addElement('html' , '</div>');
         }
+
+        // end the form_div
+        $mform->addElement('html' , '</div>');
 
         if($CM_DEBUG) {
             foreach ($term_list as $t) {
