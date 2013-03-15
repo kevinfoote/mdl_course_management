@@ -22,6 +22,7 @@ class cm_form extends moodleform {
             $course_menu = course_management::get_course_list_f($term);
             $term_heading = '&nbsp;&nbsp<b>Term :: '.$termname.'</b>';
             $mform->addElement('html', $term_heading);
+            // if count($course_menu < 1) {}
             foreach ($course_menu as $id=>$course) {
                 $mform->addElement('advcheckbox', $id, null, $course, array('group'=>(int)$term));
             }

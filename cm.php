@@ -10,35 +10,30 @@ require_once("../../config.php");
 require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once('block_course_management.php');
-include_once("lib.php");
+require_once("lib.php");
+require_once('cm_form.php');
 
 global $CFG, $USER;
 
 //Check user have logged in to the system or not
-require_login(0, false);
-require_once('cm_form.php');
+require_login();
 
-// create and get our select form
+$blockname = course_management::_s('blockname');
+$header = course_management::_s('cmcreate');
 $cm = new cm_form();
-$site = get_system_context();
 
 if ($cm->is_cancelled()) {
     // cancelled forms redirect back to /my/
     redirect("$CFG->wwwroot/my/");
 } else if ($data = $cm->get_data()) { 
-    // DO data processing etc..
-    $blockname = course_management::_s('blockname');
-    $header = course_management::_s('cmcreate');
-
     // setup page components 
-    $PAGE->set_context(get_context_instance(CONTEXT_SYSTEM));
-    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-    $PAGE->navbar->add($blockname);
+    $PAGE->set_url('/blocks/course_management/cm.php');
     $PAGE->set_title($blockname . ': '. $header);
     $PAGE->set_heading($blockname . ': '.$header);
-    $PAGE->set_url('/blocks/course_management/cm.php');
     $PAGE->set_pagelayout('standard');
-
+    $PAGE->set_context(context_system::instance());
+    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
+    $PAGE->navbar->add($blockname);
 
     // draw page to screen
     echo $OUTPUT->header();
@@ -65,20 +60,15 @@ if ($cm->is_cancelled()) {
     echo $OUTPUT->footer();
 
 } else {
-    
-    $blockname = course_management::_s('blockname');
-    $header = course_management::_s('cmcreate');
-
     // setup page components 
-    $PAGE->set_context(get_context_instance(CONTEXT_SYSTEM));
-    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-    $PAGE->navbar->add($blockname);
+    $PAGE->set_url('/blocks/course_management/cm.php');
     $PAGE->set_title($blockname . ': '. $header);
     $PAGE->set_heading($blockname . ': '.$header);
-    $PAGE->set_url('/blocks/course_management/cm.php');
     $PAGE->set_pagelayout('standard');
-
-
+    $PAGE->set_context(context_system::instance());
+    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
+    $PAGE->navbar->add($blockname);
+    
     // draw page to screen
     echo $OUTPUT->header();
     echo $OUTPUT->heading($blockname);
