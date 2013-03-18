@@ -39,24 +39,26 @@ if ($cm->is_cancelled()) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading($blockname);
     // CONTENT
-    echo '<p>Hello '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.').</p>';
-    echo '<p>Use the below form to select a term and course to create.</p>';
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container_start(null,null);
+    echo course_management::_s('cm_greet').' '.$USER->firstname.' '.$USER->lastname;
+    echo $OUTPUT->container_end();
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container(course_management::_s('cm_intro'));
+    echo $OUTPUT->container($cm->display());
 
 //    foreach ($warnings as $type => $warning) {
 //        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
 //        echo $OUTPUT->notification($warning, $class);
 //    }
 
-    echo html_writer::start_tag('div', array('class' => 'no-overflow'));
-    $cm->display();
-
+    echo $OUTPUT->container_start();
     echo '<p>Here is what you selected previously.</p>';
     foreach ($data as $id=>$val) {
         echo "$id is $val";
         echo '<br>';
     } 
-
-    echo html_writer::end_tag('div');
+    echo $OUTPUT->container_end();
     echo $OUTPUT->footer();
 
 } else {
@@ -73,17 +75,18 @@ if ($cm->is_cancelled()) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading($blockname);
     // CONTENT
-    echo '<p>Hello '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.').</p>';
-    echo '<p>Use the below form to select a term and course to create.</p>';
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container_start(null,null);
+    echo course_management::_s('cm_greet').' '.$USER->firstname.' '.$USER->lastname;
+    echo $OUTPUT->container_end();
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container(course_management::_s('cm_intro'));
+    echo $OUTPUT->container($cm->display());
 
 //    foreach ($warnings as $type => $warning) {
 //        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
 //        echo $OUTPUT->notification($warning, $class);
 //    }
-
-    echo html_writer::start_tag('div', array('class' => 'no-overflow'));
-    $cm->display();
-    echo html_writer::end_tag('div');
 
     echo $OUTPUT->footer();
 }
