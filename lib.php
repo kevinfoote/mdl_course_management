@@ -108,6 +108,23 @@ abstract class course_management extends cm_b {
         return ($c_list);
     }
 
+    // get key pair array of active courses for setting up a checkbox UI
+    static function get_course_list_a($t) {
+        global $DB, $USER;
+
+        $term = $t; 
+        $table = 'cm_course';
+        $user = $USER->username; 
+
+        // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
+        $array = array(1,$term,$user);
+        
+        $c_list = $DB->get_records_sql_menu($sql,$array);
+        
+        return ($c_list);
+    }
+
     static function get_enrollment($courseshort) {
         return;
     }
