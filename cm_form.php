@@ -17,9 +17,9 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $form_div = '<div style="text-align:center;width: 40%">';
+        $form_div1 = '<div style="text-align:center;width: 40%">';
 
-        $mform->addElement('html' , $form_div);
+        $mform->addElement('html' , $form_div1);
 
         foreach ($term_list as $term) {
             $termname = course_management::get_term_name($term);
@@ -61,12 +61,27 @@ class cm_form extends moodleform {
         $buttons = array();
         $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
         $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
-        
         $mform->addGroup($buttons, 'buttons', null, array(' '), false);
-        // end the form_div
-        $mform->addElement('html' , '</div>');
-        // TODO: meta-course form bits should go here
-        $mform->closeHeaderBefore('buttons');
+        $form_div1 = '</div>';
+        $mform->addElement('html' , $form_div1);
+        $form_div2 = '<div style="text-align:center;width: 40%">';
+        $mform->addElement('html' , $form_div2);
+        // TODO: add textbox here for name
+        foreach ($term_list as $term) {
+            $course_menu = course_management::get_course_list_a($term);
+            if(count($course_menu) >= 1) {
+                foreach ($course_menu as $id=>$course) {
+                    $mform->addElement('advcheckbox', $id, null, $course, null,null);
+                }
+            } 
+        }
+        $buttons2 = array();
+        $buttons2[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
+        $buttons2[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
+        $mform->addGroup($buttons2, 'buttons', null, array(' '), false);
+        $form_div2 = '</div>';
+        $mform->addElement('html' , $form_div2);
+        //$mform->closeHeaderBefore('buttons');
     }
 }
 ?>
