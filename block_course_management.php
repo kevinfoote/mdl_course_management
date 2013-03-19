@@ -41,7 +41,7 @@ class block_course_management extends block_base {
             return $this->content;
         }
 
-        $this->content->text = '<div class="cmblock"><a href="'.$CFG->wwwroot.'/blocks/course_management/cm.php">'.get_string('cmcreate','block_course_management').'</a></div>';
+        $this->content->text = '<div class="cmblock"><a href="'.$CFG->wwwroot.'/blocks/course_management/cm.php">'.get_string('startup','block_course_management').'</a></div>';
         return $this->content;
     }
 }
