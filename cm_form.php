@@ -69,7 +69,7 @@ class cm_form extends moodleform {
             .'<div style="text-align:left;float:none">'
             .course_management::_s('meta_intro').'</div><br>';
 
-        $mform->addElement('html' , $meta_info)
+        $mform->addElement('html' , $meta_info);
 
         //
         // TODO: add textbox here for name of meta to create 
