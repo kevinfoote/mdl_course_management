@@ -17,21 +17,17 @@ class cm_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $form_div1 = '<div style="text-align:center;width: 40%">';
-
-        $mform->addElement('html' , $form_div1);
-
         foreach ($term_list as $term) {
             $termname = course_management::get_term_name($term);
             $course_menu = course_management::get_course_list_f($term);
-            $term_heading = '<div style="text-align:left">'
+            $term_heading = '<div style="text-align:left;margin-left:20px;float:none">'
                            .'&nbsp;&nbsp;&nbsp;&nbsp;'
-                           .'<b>Term :: '.$termname.'</b>';
+                           .'<b>'.course_management::_s('termtitle').' :: '.$termname.'</b></div>';
             $mform->addElement('html', $term_heading);
 
             if (count($course_menu) < 1) {
-                $term_nocourse = '<br><br>'
-                    .'<div style="color:red;text-align:center">'
+                $term_nocourse = course_management::_s('break2')
+                    .'<div style="text-align:center;margin-left:50px;color:red;float:none">'
                     .course_management::_s('nocourse').'</div>';
                 $mform->addElement('html' , $term_nocourse);
             } else {
@@ -40,7 +36,6 @@ class cm_form extends moodleform {
                 }
                 $this->add_checkbox_controller((int)$term);
             }
-            $mform->addElement('html' , '</div>');
         }
 
 
@@ -59,14 +54,26 @@ class cm_form extends moodleform {
         }
 
         $buttons = array();
-        $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
+        $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('c_create'));
         $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
         $mform->addGroup($buttons, 'buttons', null, array(' '), false);
-        $form_div1 = '</div>';
-        $mform->addElement('html' , $form_div1);
-        $form_div2 = '<div style="text-align:center;width: 40%">';
-        $mform->addElement('html' , $form_div2);
-        // TODO: add textbox here for name
+
+        $mform->addElement('html' , course_management::_s('break2'));
+
+        $previous_heading = '<div style="text-align:left;float:none">'
+            .'<b>'.course_management::_s('previous_t').'</b></div>';
+
+        $mform->addElement('html' , $previous_heading);
+
+        $meta_info = course_management::_s('break2') 
+            .'<div style="text-align:left;float:none">'
+            .course_management::_s('meta_intro').'</div><br>';
+
+        $mform->addElement('html' , $meta_info)
+
+        //
+        // TODO: add textbox here for name of meta to create 
+        //
         foreach ($term_list as $term) {
             $course_menu = course_management::get_course_list_a($term);
             if(count($course_menu) >= 1) {
@@ -76,12 +83,10 @@ class cm_form extends moodleform {
             } 
         }
         $buttons2 = array();
-        $buttons2[] =& $mform->createElement('submit', 'createb', course_management::_s('cmcreate'));
+        $buttons2[] =& $mform->createElement('submit', 'createb', course_management::_s('m_create'));
         $buttons2[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
         $mform->addGroup($buttons2, 'buttons', null, array(' '), false);
-        $form_div2 = '</div>';
-        $mform->addElement('html' , $form_div2);
-        //$mform->closeHeaderBefore('buttons');
+        $mform->closeHeaderBefore('buttons');
     }
 }
 ?>
