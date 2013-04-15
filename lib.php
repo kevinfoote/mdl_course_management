@@ -134,10 +134,53 @@ abstract class course_management extends cm_b {
     }
  
     static function do_make_cshell($enrollment, $courseshort) {
+        global $DB, $CFG;
+        require_once($CFG->dirroot .'/course/lib.php');
+
+        $enrollment = $enrollment;
+        $course_short = $courseshort;
+        $meta = 0;
+
+        $sql = 'SELECT * FROM {course} WHERE shortname = ?';
+        $array = array($course_short);
+        $course = $DB->get_record_sql($sql,$array);
+        
+        if( !$course ) {
+            $sql = 'SELECT coursefull,term FROM {'.$table.'} WHERE courseshort = ?'; 
+            $array = array($courseshort);
+   
+            $cdata = $DB->get_records_sql_menu($sql,$array);
+
+            foreach ($cdata as $id=>$term) {
+                $course_full = $id;
+                $termid = $term;
+            }
+
+            // DO create the course
+            $new_cshell->category = 'Courses';        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
+            $new_cshell->fullname = "$course_full";   //NEED TO GET 
+            $new_cshell->shortname = "$course_short"; //NEED TO GET
+            $new_cshell->idnumber = "$course_id";     //NEED TO GET
+            $new_cshell->visible = 0;
+            $new_cshell->numsections = 1;
+            $new_cshell->enrollable = 0;
+            $new_cshell->format = "weeks";
+            $new_cshell->numsections = "15"; //15 weeks
+            $new_cshell->maxbytes = "52428800"; //50mb uploads IRT new default
+            $new_cshell->startdate = time();  //need this so weekly outline will display correctly
+            $new_cshell->metacourse = $meta;
+ 
+            if (!$course =  create_course($new_cshell)) {
+                echo "ERROR CREATING COURSE";
+            }
+       
+        // DO add the initial enrollment 
+
         return;
     }
  
     static function do_make_metashell($courseshort) {
+        $meta = 1;
         return;
     }
 }
