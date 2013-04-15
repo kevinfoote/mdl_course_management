@@ -50,7 +50,6 @@ if ($cm->is_cancelled()) {
 
 } else if ($data = $cm->get_data()) { 
 
-    echo $OUTPUT->container($cm->display());
 
 //    foreach ($warnings as $type => $warning) {
 //        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
@@ -58,12 +57,16 @@ if ($cm->is_cancelled()) {
 //    }
 
     echo $OUTPUT->container_start();
-    echo '<p>Here is what you selected previously.</p>';
     foreach ($data as $id=>$val) {
-        echo "$id is $val";
-        echo '<br>';
+        // ex: 85 is 1 
+        if ($val == 1) {
+            course_management::cm_create_course($id);
+            echo "create course $id <br>";
+        }
     } 
     echo $OUTPUT->container_end();
+
+    echo $OUTPUT->container($cm->display());
     echo $OUTPUT->footer();
 
 } else {

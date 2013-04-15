@@ -179,6 +179,14 @@ abstract class course_management extends cm_b {
 
         return;
     }
+    
+    static function cm_create_course($id) {
+        global $DB;
+        // translate id to courseshort
+        // if (do_make_cshell(parm,parm)) 
+        //     mark cm_course as created
+        // return 
+    }
  
     static function do_make_metashell($courseshort) {
         $meta = 1;
