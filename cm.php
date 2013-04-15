@@ -20,31 +20,36 @@ require_login();
 
 $blockname = course_management::_s('blockname');
 $header = course_management::_s('cmcreate');
+
+// setup page components 
+$PAGE->set_context(context_system::instance());
+$PAGE->set_url('/blocks/course_management/cm.php');
+$PAGE->set_title($blockname . ': '. $header);
+$PAGE->set_heading($blockname . ': '.$header);
+$PAGE->set_pagelayout('standard');
+$PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
+$PAGE->navbar->add($blockname);
+
+// draw page to screen
+echo $OUTPUT->header();
+echo $OUTPUT->heading($blockname);
+
+// CONTENT
+echo $OUTPUT->container(course_management::_s('break1'));
+echo $OUTPUT->container_start(null,null);
+echo course_management::_s('cm_greet').' '.$USER->firstname.' '.$USER->lastname;
+echo $OUTPUT->container_end();
+echo $OUTPUT->container(course_management::_s('break1'));
+echo $OUTPUT->container(course_management::_s('cm_intro'));
+
 $cm = new cm_form();
 
 if ($cm->is_cancelled()) {
-    // cancelled forms redirect back to /my/
-    redirect("$CFG->wwwroot/my/");
-} else if ($data = $cm->get_data()) { 
-    // setup page components 
-    $PAGE->set_url('/blocks/course_management/cm.php');
-    $PAGE->set_title($blockname . ': '. $header);
-    $PAGE->set_heading($blockname . ': '.$header);
-    $PAGE->set_pagelayout('standard');
-    $PAGE->set_context(context_system::instance());
-    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-    $PAGE->navbar->add($blockname);
 
-    // draw page to screen
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading($blockname);
-    // CONTENT
-    echo $OUTPUT->container(course_management::_s('break1'));
-    echo $OUTPUT->container_start(null,null);
-    echo course_management::_s('cm_greet').' '.$USER->firstname.' '.$USER->lastname;
-    echo $OUTPUT->container_end();
-    echo $OUTPUT->container(course_management::_s('break1'));
-    echo $OUTPUT->container(course_management::_s('cm_intro'));
+    redirect("$CFG->wwwroot/my/");
+
+} else if ($data = $cm->get_data()) { 
+
     echo $OUTPUT->container($cm->display());
 
 //    foreach ($warnings as $type => $warning) {
@@ -62,25 +67,7 @@ if ($cm->is_cancelled()) {
     echo $OUTPUT->footer();
 
 } else {
-    // setup page components 
-    $PAGE->set_url('/blocks/course_management/cm.php');
-    $PAGE->set_title($blockname . ': '. $header);
-    $PAGE->set_heading($blockname . ': '.$header);
-    $PAGE->set_pagelayout('standard');
-    $PAGE->set_context(context_system::instance());
-    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-    $PAGE->navbar->add($blockname);
-    
-    // draw page to screen
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading($blockname);
-    // CONTENT
-    echo $OUTPUT->container(course_management::_s('break1'));
-    echo $OUTPUT->container_start(null,null);
-    echo course_management::_s('cm_greet').' '.$USER->firstname.' '.$USER->lastname;
-    echo $OUTPUT->container_end();
-    echo $OUTPUT->container(course_management::_s('break1'));
-    echo $OUTPUT->container(course_management::_s('cm_intro'));
+
     echo $OUTPUT->container($cm->display());
 
 //    foreach ($warnings as $type => $warning) {
