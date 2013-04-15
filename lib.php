@@ -173,6 +173,7 @@ abstract class course_management extends cm_b {
             if (!$course =  create_course($new_cshell)) {
                 echo "ERROR CREATING COURSE";
             }
+        }
        
         // DO add the initial enrollment 
 
