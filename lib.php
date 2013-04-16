@@ -129,7 +129,7 @@ abstract class course_management extends cm_b {
         return;
     }
     
-    static function do_set_active($courseshort) {
+    static function do_set_active($id) {
         return;
     }
  
@@ -197,11 +197,14 @@ abstract class course_management extends cm_b {
 
         // if (do_make_cshell(parm,parm)) 
         //     mark cm_course as created
-        if (do_make_cshell($id)) {
+
+        if (course_management::do_make_cshell($id)) {
             // now add the enrollment data
-            if (do_add_enrollment($id)) {
+            if (course_management::do_add_enrollment($id)) {
+                course_management::do_set_active($id);
                 $retval = TRUE; 
             }
+            
         }
         return ($retval);
     }
