@@ -133,10 +133,11 @@ abstract class course_management extends cm_b {
         return;
     }
  
-    static function do_make_cshell($enrollment, $id) {
+    static function do_make_cshell($id) {
         global $DB, $CFG;
         require_once($CFG->dirroot .'/course/lib.php');
 
+        $retval = FALSE;
         $table = 'cm_course';
 
         $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
@@ -163,15 +164,16 @@ abstract class course_management extends cm_b {
             $new_cshell->category = 'Courses';        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
             $new_cshell->fullname = "$course_full";   //NEED TO GET 
             $new_cshell->shortname = "$course_short"; //NEED TO GET
-            $new_cshell->idnumber = "$course_id";     //NEED TO GET
-            $new_cshell->visible = 0;
-            $new_cshell->numsections = 1;
-            $new_cshell->enrollable = 0;
+            $new_cshell->idnumber = "$course_short";  //NEED TO GET
             $new_cshell->format = "weeks";
-            $new_cshell->numsections = "15"; //15 weeks
-            $new_cshell->maxbytes = "52428800"; //50mb uploads IRT new default
             $new_cshell->startdate = time();  //need this so weekly outline will display correctly
-            $new_cshell->metacourse = $meta;
+            $new_cshell->maxbytes = "52428800"; //50mb uploads IRT new default
+            $new_cshell->visible = 0;
+            $new_cshell->visibleold = 0;
+            //$new_cshell->numsections = 1;
+            //$new_cshell->enrollable = 0;
+            //$new_cshell->numsections = "15"; //15 weeks
+            //$new_cshell->metacourse = $meta;
  
             if (!$course = create_course($new_cshell)) {
                 echo "ERROR CREATING COURSE";
@@ -179,8 +181,15 @@ abstract class course_management extends cm_b {
         }
        
         // DO add the initial enrollment 
+        $sql = 'SELECT * FROM {course} WHERE shortname = ?';
+        $array = array($course_short);
+        $course = $DB->get_record_sql($sql,$array);
 
-        return;
+        if ($DB->get_record_sql($sql,$array)) {
+            $retval = TRUE;
+        }
+
+        return ($retval);
     }
     
     static function cm_create_course($id) {
@@ -188,8 +197,13 @@ abstract class course_management extends cm_b {
 
         // if (do_make_cshell(parm,parm)) 
         //     mark cm_course as created
-        // return 
-        
+        if (do_make_cshell($id)) {
+            // now add the enrollment data
+            if (do_add_enrollment($id)) {
+                $retval = TRUE; 
+            }
+        }
+        return ($retval)
     }
  
     static function do_make_metashell($courseshort) {
