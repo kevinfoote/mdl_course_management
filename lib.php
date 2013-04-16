@@ -141,12 +141,12 @@ abstract class course_management extends cm_b {
         $table = 'cm_course';
 
         $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
-        $in_data = $DB->get_record_sql($sql,array($id)); 
+        $cm_data = $DB->get_records_sql($sql,array($id)); 
 
         $enrollment = $enrollment;
         $meta = 0;
 
-        foreach ($item as $id=>$values) {
+        foreach ($cm_data as $id=>$values) {
             $course_full  = $values[0];
             $course_short = $values[1];
             $course_inst  = $values[2];
@@ -161,7 +161,7 @@ abstract class course_management extends cm_b {
         if( !$course ) {
 
             // DO create the course
-            $new_cshell->category = 'Courses';        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
+            $new_cshell->category = 3;        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
             $new_cshell->fullname = "$course_full";   //NEED TO GET 
             $new_cshell->shortname = "$course_short"; //NEED TO GET
             $new_cshell->idnumber = "$course_short";  //NEED TO GET
@@ -203,7 +203,7 @@ abstract class course_management extends cm_b {
                 $retval = TRUE; 
             }
         }
-        return ($retval)
+        return ($retval);
     }
  
     static function do_make_metashell($courseshort) {
