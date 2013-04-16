@@ -75,7 +75,7 @@ abstract class course_management extends cm_b {
     static function get_course_list($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
@@ -83,8 +83,8 @@ abstract class course_management extends cm_b {
         // get_fieldset_select($table, $return, $select, array $params=null)
 
         //$sql = 'SELECT coursefull FROM {cm_course} WHERE active = ? AND term = ? AND instructor = ?';
-        $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(0,$term,$user);
+        $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(0,$termcode,$user);
         
         $c_list = $DB->get_fieldset_sql($sql,$array);
         
@@ -95,13 +95,13 @@ abstract class course_management extends cm_b {
     static function get_course_list_f($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
         // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
-        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(0,$term,$user);
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(0,$termcode,$user);
         
         $c_list = $DB->get_records_sql_menu($sql,$array);
         
@@ -112,13 +112,13 @@ abstract class course_management extends cm_b {
     static function get_course_list_a($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
         // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
-        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(1,$term,$user);
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(1,$termcode,$user);
         
         $c_list = $DB->get_records_sql_menu($sql,$array);
         
@@ -133,28 +133,31 @@ abstract class course_management extends cm_b {
         return;
     }
  
-    static function do_make_cshell($enrollment, $courseshort) {
+    static function do_make_cshell($enrollment, $id) {
         global $DB, $CFG;
         require_once($CFG->dirroot .'/course/lib.php');
 
+        $table = 'cm_course';
+
+        $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
+        $in_data = $DB->get_record_sql($sql,array($id)); 
+
         $enrollment = $enrollment;
-        $course_short = $courseshort;
         $meta = 0;
+
+        foreach ($item as $id=>$values) {
+            $course_full  = $values[0];
+            $course_short = $values[1];
+            $course_inst  = $values[2];
+            $course_term  = $values[3];
+            $course_actv  = $values[4];
+        }
 
         $sql = 'SELECT * FROM {course} WHERE shortname = ?';
         $array = array($course_short);
         $course = $DB->get_record_sql($sql,$array);
         
         if( !$course ) {
-            $sql = 'SELECT coursefull,term FROM {'.$table.'} WHERE courseshort = ?'; 
-            $array = array($courseshort);
-   
-            $cdata = $DB->get_records_sql_menu($sql,$array);
-
-            foreach ($cdata as $id=>$term) {
-                $course_full = $id;
-                $termid = $term;
-            }
 
             // DO create the course
             $new_cshell->category = 'Courses';        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
@@ -170,7 +173,7 @@ abstract class course_management extends cm_b {
             $new_cshell->startdate = time();  //need this so weekly outline will display correctly
             $new_cshell->metacourse = $meta;
  
-            if (!$course =  create_course($new_cshell)) {
+            if (!$course = create_course($new_cshell)) {
                 echo "ERROR CREATING COURSE";
             }
         }
@@ -182,10 +185,11 @@ abstract class course_management extends cm_b {
     
     static function cm_create_course($id) {
         global $DB;
-        // translate id to courseshort
+
         // if (do_make_cshell(parm,parm)) 
         //     mark cm_course as created
         // return 
+        
     }
  
     static function do_make_metashell($courseshort) {
