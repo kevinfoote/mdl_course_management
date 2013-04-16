@@ -9,9 +9,9 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="coursefull"/>
         <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="id" NEXT="courseshort"/>
         <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="coursefull" NEXT="instructor"/>
-        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseshort" NEXT="term"/>
-        <FIELD NAME="term" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
-        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="term"/>
+        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseshort" NEXT="termcode"/>
+        <FIELD NAME="termcode" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="termcode"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
