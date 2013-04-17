@@ -75,7 +75,7 @@ abstract class course_management extends cm_b {
     static function get_course_list($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
@@ -83,8 +83,8 @@ abstract class course_management extends cm_b {
         // get_fieldset_select($table, $return, $select, array $params=null)
 
         //$sql = 'SELECT coursefull FROM {cm_course} WHERE active = ? AND term = ? AND instructor = ?';
-        $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(0,$term,$user);
+        $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(0,$termcode,$user);
         
         $c_list = $DB->get_fieldset_sql($sql,$array);
         
@@ -95,13 +95,13 @@ abstract class course_management extends cm_b {
     static function get_course_list_f($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
         // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
-        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(0,$term,$user);
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(0,$termcode,$user);
         
         $c_list = $DB->get_records_sql_menu($sql,$array);
         
@@ -112,13 +112,13 @@ abstract class course_management extends cm_b {
     static function get_course_list_a($t) {
         global $DB, $USER;
 
-        $term = $t; 
+        $termcode = $t; 
         $table = 'cm_course';
         $user = $USER->username; 
 
         // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
-        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND term = ? AND instructor = ?';
-        $array = array(1,$term,$user);
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
+        $array = array(1,$termcode,$user);
         
         $c_list = $DB->get_records_sql_menu($sql,$array);
         
@@ -126,18 +126,104 @@ abstract class course_management extends cm_b {
     }
 
     static function get_enrollment($courseshort) {
-        return;
+        global $DB;
+        $retval = false;
+        return ($retval);
     }
     
-    static function do_set_active($courseshort) {
-        return;
+    static function do_set_enrollment($id) {
+        global $DB;
+        $retval = false;
+        return ($retval);
+    }
+
+    static function do_set_active($id) {
+        global $DB;
+        $table = 'cm_course';
+        
+        $data_record = new stdClass;
+        $data_record->id = (int)$id;
+        $data_record->active = 1;
+        
+        $retval = $DB->update_record($table,$data_record, $bulk=false);
+        
+        return ($retval);
     }
  
-    static function do_make_cshell($enrollment, $courseshort) {
-        return;
+    static function do_make_cshell($id) {
+        global $DB, $CFG;
+        require_once($CFG->dirroot .'/course/lib.php');
+
+        $retval = FALSE;
+        $table = 'cm_course';
+        $meta = 0;
+
+        $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
+        $cm_data = $DB->get_record_sql($sql,array($id)); 
+
+        $course_full  = $cm_data->coursefull;
+        $course_short = $cm_data->courseshort;
+        $course_inst  = $cm_data->instructor;
+        $course_term  = $cm_data->termcode;
+        $course_actv  = $cm_data->active;
+
+        // Check for a previous instance of this course
+        $sql = 'SELECT * FROM {course} WHERE shortname = ?';
+        $array = array($course_short);
+        $course = $DB->get_record_sql($sql,$array);
+        
+        if (!$course && $course_actv == 0) {
+
+            // DO create the course
+            $new_cshell->category = 3;        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
+            $new_cshell->fullname = "$course_full";   //NEED TO GET 
+            $new_cshell->shortname = "$course_short"; //NEED TO GET
+            $new_cshell->idnumber = "$course_short";  //NEED TO GET
+            $new_cshell->format = "weeks";
+            $new_cshell->startdate = time();  //need this so weekly outline will display correctly
+            $new_cshell->maxbytes = "52428800"; //50mb uploads IRT new default
+            $new_cshell->visible = 0;
+            $new_cshell->visibleold = 0;
+            //$new_cshell->numsections = 1;
+            //$new_cshell->enrollable = 0;
+            //$new_cshell->numsections = "15"; //15 weeks
+            //$new_cshell->metacourse = $meta;
+ 
+            //if (!$course = create_course($new_cshell)) {
+            //    echo "ERROR CREATING COURSE";
+            //    $retval = FALSE;
+            //} else { 
+            //    $retval = TRUE;
+            //}
+            try { 
+                create_course($new_cshell);
+                $retval = true;
+            } catch (Exception $e) {
+                throw new Exception ('Error creating course:'.$course_short, 0, $e);
+            }
+        }
+
+        return ($retval);
+    }
+    
+    static function cm_create_course($id) {
+        global $DB;
+        $retval = false;
+
+        if (course_management::do_make_cshell($id)) {
+            try {
+                course_management::do_set_active($id);
+                course_management::do_set_enrollment($id);
+                $retval = true; 
+            } catch (Exception $e) {
+                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
+            } 
+        }
+        return ($retval);
     }
  
     static function do_make_metashell($courseshort) {
+        $meta = 1;
         return;
     }
 }

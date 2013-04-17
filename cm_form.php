@@ -7,7 +7,6 @@ require_once('lib.php');
 
 class cm_form extends moodleform {
 
-
     function definition() {
         global $CFG, $USER; 
         $CM_DEBUG=FALSE;
@@ -16,6 +15,10 @@ class cm_form extends moodleform {
         $term_list = course_management::get_term_list('short');
 
         $mform =& $this->_form;
+
+        $available_heading = '<div style="text-align:left;float:none">'
+            .'<b>'.course_management::_s('t_available').'</b></div>';
+        $mform->addElement('html' , $available_heading);
 
         foreach ($term_list as $term) {
             $termname = course_management::get_term_name($term);
@@ -61,8 +64,7 @@ class cm_form extends moodleform {
         $mform->addElement('html' , course_management::_s('break2'));
 
         $previous_heading = '<div style="text-align:left;float:none">'
-            .'<b>'.course_management::_s('previous_t').'</b></div>';
-
+            .'<b>'.course_management::_s('t_previous').'</b></div>';
         $mform->addElement('html' , $previous_heading);
 
         $meta_info = course_management::_s('break2') 
@@ -87,6 +89,12 @@ class cm_form extends moodleform {
         $buttons2[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
         $mform->addGroup($buttons2, 'buttons', null, array(' '), false);
         $mform->closeHeaderBefore('buttons');
+    }
+    
+    function definition_after_data() {
+    }
+
+    function set_data() {
     }
 }
 ?>
