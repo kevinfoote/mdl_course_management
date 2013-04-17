@@ -139,26 +139,23 @@ abstract class course_management extends cm_b {
 
         $retval = FALSE;
         $table = 'cm_course';
+        $meta = 0;
 
         $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
         $cm_data = $DB->get_records_sql($sql,array($id)); 
 
-        $enrollment = $enrollment;
-        $meta = 0;
+        $course_full  = $cm_data->coursefull;
+        $course_short = $cm_data->courseshort;
+        $course_inst  = $cm_data->instructor;
+        $course_term  = $cm_data->termcode;
+        $course_actv  = $cm_data->active;
 
-        foreach ($cm_data as $id=>$values) {
-            $course_full  = $values[0];
-            $course_short = $values[1];
-            $course_inst  = $values[2];
-            $course_term  = $values[3];
-            $course_actv  = $values[4];
-        }
-
+        // Check for a previous instance of this course
         $sql = 'SELECT * FROM {course} WHERE shortname = ?';
         $array = array($course_short);
         $course = $DB->get_record_sql($sql,$array);
         
-        if( !$course ) {
+        if (!$course && $course_actv == 0) {
 
             // DO create the course
             $new_cshell->category = 3;        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
@@ -177,16 +174,10 @@ abstract class course_management extends cm_b {
  
             if (!$course = create_course($new_cshell)) {
                 echo "ERROR CREATING COURSE";
+                $retval = FALSE;
+            } else { 
+                $retval = TRUE;
             }
-        }
-       
-        // DO add the initial enrollment 
-        $sql = 'SELECT * FROM {course} WHERE shortname = ?';
-        $array = array($course_short);
-        $course = $DB->get_record_sql($sql,$array);
-
-        if ($DB->get_record_sql($sql,$array)) {
-            $retval = TRUE;
         }
 
         return ($retval);
@@ -194,9 +185,6 @@ abstract class course_management extends cm_b {
     
     static function cm_create_course($id) {
         global $DB;
-
-        // if (do_make_cshell(parm,parm)) 
-        //     mark cm_course as created
 
         if (course_management::do_make_cshell($id)) {
             // now add the enrollment data
