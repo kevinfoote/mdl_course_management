@@ -126,11 +126,28 @@ abstract class course_management extends cm_b {
     }
 
     static function get_enrollment($courseshort) {
-        return;
+        global $DB;
+        $retval = false;
+        return ($retval);
     }
     
+    static function do_set_enrollment($id) {
+        global $DB;
+        $retval = false;
+        return ($retval);
+    }
+
     static function do_set_active($id) {
-        return;
+        global $DB;
+        $table = 'cm_course';
+        
+        $data_record = new stdClass;
+        $data_record->id = (int)$id;
+        $data_record->active = 1;
+        
+        $retval = $DB->update_record($table,$data_record, $bulk=false);
+        
+        return ($retval);
     }
  
     static function do_make_cshell($id) {
@@ -172,11 +189,17 @@ abstract class course_management extends cm_b {
             //$new_cshell->numsections = "15"; //15 weeks
             //$new_cshell->metacourse = $meta;
  
-            if (!$course = create_course($new_cshell)) {
-                echo "ERROR CREATING COURSE";
-                $retval = FALSE;
-            } else { 
-                $retval = TRUE;
+            //if (!$course = create_course($new_cshell)) {
+            //    echo "ERROR CREATING COURSE";
+            //    $retval = FALSE;
+            //} else { 
+            //    $retval = TRUE;
+            //}
+            try { 
+                create_course($new_cshell);
+                $retval = true;
+            } catch (Exception $e) {
+                throw new Exception ('Error creating course:'.$course_short, 0, $e);
             }
         }
 
@@ -185,14 +208,16 @@ abstract class course_management extends cm_b {
     
     static function cm_create_course($id) {
         global $DB;
+        $retval = false;
 
         if (course_management::do_make_cshell($id)) {
-            // now add the enrollment data
-            if (course_management::do_add_enrollment($id)) {
+            try {
                 course_management::do_set_active($id);
-                $retval = TRUE; 
-            }
-            
+                course_management::do_set_enrollment($id);
+                $retval = true; 
+            } catch (Exception $e) {
+                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
+            } 
         }
         return ($retval);
     }
