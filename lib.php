@@ -159,7 +159,7 @@ abstract class course_management extends cm_b {
         $meta = 0;
 
         $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
-        $cm_data = $DB->get_records_sql($sql,array($id)); 
+        $cm_data = $DB->get_record_sql($sql,array($id)); 
 
         $course_full  = $cm_data->coursefull;
         $course_short = $cm_data->courseshort;
