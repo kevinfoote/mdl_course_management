@@ -17,7 +17,8 @@ class cm_form extends moodleform {
         $mform =& $this->_form;
 
         $available_heading = '<div style="text-align:left;float:none">'
-            .'<b>'.course_management::_s('t_available').'</b></div>';
+            .'<b>'.course_management::_s('t_available').'</b></div>'
+            .course_management::_s('break1');
         $mform->addElement('html' , $available_heading);
 
         foreach ($term_list as $term) {
