@@ -15,6 +15,7 @@
  $string['cmrevert']    = 'Clear';
  $string['cm_intro']    = '<p align="left">Please choose the course shells you would like to create from the listing below. When finished selecting your course shells use the "Create" button below this section.</p>';
  $string['cm_greet']    = 'Course Management page for:';
+ $string['cm_noload']   = 'Course Management data has not been loaded into the system.';
  $string['m_create']    = 'Create Metacourse';
  $string['meta_intro']  = '<p>You may additionally create a Metacourse by combining any number of your previously created course shells.</p><p>NOTE: Only one Metacourse may be created at a time.</p>';
  $string['nocourse']    = 'N/A';
