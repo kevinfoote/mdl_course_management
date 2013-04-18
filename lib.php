@@ -173,9 +173,12 @@ abstract class course_management extends cm_b {
         $course = $DB->get_record_sql($sql,$array);
         
         if (!$course && $course_actv == 0) {
+            
+            $sql = 'SELECT id FROM {course_categories} WHERE idnumber = (SELECT termcode FROM {cm_course} WHERE id =?)';
+            $cterm = $DB->get_record_sql($sql,array($id));
 
             // DO create the course
-            $new_cshell->category = 3;        //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
+            $new_cshell->category = $cterm->id;       //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
             $new_cshell->fullname = "$course_full";   //NEED TO GET 
             $new_cshell->shortname = "$course_short"; //NEED TO GET
             $new_cshell->idnumber = "$course_short";  //NEED TO GET
