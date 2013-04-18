@@ -7,7 +7,13 @@ require_once('lib.php');
 
 class cm_form extends moodleform {
 
-    function definition() {
+    function definition_after_data() {
+    }
+
+    function set_data() {
+    }
+
+    public function definition() {
         global $CFG, $USER; 
         $CM_DEBUG=FALSE;
 
@@ -92,10 +98,5 @@ class cm_form extends moodleform {
         $mform->closeHeaderBefore('buttons');
     }
     
-    function definition_after_data() {
-    }
-
-    function set_data() {
-    }
 }
 ?>
