@@ -145,7 +145,7 @@ abstract class course_management extends cm_b {
     }
  
     static function do_make_cshell($id) {
-        global $DB, $CFG;
+        global $DB, $CFG, $USER;
         require_once($CFG->dirroot .'/course/lib.php');
 
         $retval = FALSE;
@@ -183,8 +183,12 @@ abstract class course_management extends cm_b {
             $new_cshell->visibleold = 0;
 
             try { 
-                create_course($new_cshell);
-                // add instructor / teacher here 
+                $n_course = create_course($new_cshell);
+                $role = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?',array('editingteacher'));
+                $context = context_course::instance($n_course->id);
+                if (! role_assign($role->id,$USER->id,$context->id) ) {
+                    echo "No Teacher assigned";
+                }  
                 $retval = true;
             } catch (Exception $e) {
                 throw new Exception ('Error creating course:'.$course_short, 0, $e);
