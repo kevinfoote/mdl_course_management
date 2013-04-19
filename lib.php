@@ -79,10 +79,6 @@ abstract class course_management extends cm_b {
         $table = 'cm_course';
         $user = $USER->username; 
 
-        // SELECT coursefull FROM mdl_cm_course WHERE instructor=$user AND active=0;
-        // get_fieldset_select($table, $return, $select, array $params=null)
-
-        //$sql = 'SELECT coursefull FROM {cm_course} WHERE active = ? AND term = ? AND instructor = ?';
         $sql = 'SELECT coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
         $array = array(0,$termcode,$user);
         
@@ -99,7 +95,6 @@ abstract class course_management extends cm_b {
         $table = 'cm_course';
         $user = $USER->username; 
 
-        // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
         $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
         $array = array(0,$termcode,$user);
         
@@ -116,7 +111,6 @@ abstract class course_management extends cm_b {
         $table = 'cm_course';
         $user = $USER->username; 
 
-        // SELECT id,coursefull FROM mdl_cm_course WHERE active=0 AND term='201310' AND instructor='kpfoote';
         $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND termcode = ? AND instructor = ?';
         $array = array(1,$termcode,$user);
         
@@ -178,28 +172,19 @@ abstract class course_management extends cm_b {
             $cterm = $DB->get_record_sql($sql,array($id));
 
             // DO create the course
-            $new_cshell->category = $cterm->id;       //NEED TO PULL this from mdl_course_categories.name match of mdl_term.termname
-            $new_cshell->fullname = "$course_full";   //NEED TO GET 
-            $new_cshell->shortname = "$course_short"; //NEED TO GET
-            $new_cshell->idnumber = "$course_short";  //NEED TO GET
+            $new_cshell->category = $cterm->id;       
+            $new_cshell->fullname = "$course_full";   
+            $new_cshell->shortname = "$course_short"; 
+            $new_cshell->idnumber = "$course_short";  
             $new_cshell->format = "weeks";
-            $new_cshell->startdate = time();  //need this so weekly outline will display correctly
-            $new_cshell->maxbytes = "52428800"; //50mb uploads IRT new default
+            $new_cshell->startdate = time();    // need this so weekly outline will display correctly
+            $new_cshell->maxbytes = "52428800"; // This should be a Settings var
             $new_cshell->visible = 0;
             $new_cshell->visibleold = 0;
-            //$new_cshell->numsections = 1;
-            //$new_cshell->enrollable = 0;
-            //$new_cshell->numsections = "15"; //15 weeks
-            //$new_cshell->metacourse = $meta;
- 
-            //if (!$course = create_course($new_cshell)) {
-            //    echo "ERROR CREATING COURSE";
-            //    $retval = FALSE;
-            //} else { 
-            //    $retval = TRUE;
-            //}
+
             try { 
                 create_course($new_cshell);
+                // add instructor / teacher here 
                 $retval = true;
             } catch (Exception $e) {
                 throw new Exception ('Error creating course:'.$course_short, 0, $e);
