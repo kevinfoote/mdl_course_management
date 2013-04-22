@@ -7,8 +7,9 @@
  */
 
 class block_course_management extends block_base {
+
     public function init() {
-        $this->title = get_string('cm', 'block_course_management');
+        $this->title = get_string('cm_title_s', 'block_course_management');
     }
 
      /**
@@ -21,8 +22,15 @@ class block_course_management extends block_base {
     /**
     * Allow only one instance 
     */
-    public function instance_allow_multiple() {
+    function instance_allow_multiple() {
         return false;
+    }
+
+    /**
+    * Register config settings 
+    */
+    function has_config() {
+        return true;
     }
 
     public function get_content() {
@@ -41,7 +49,7 @@ class block_course_management extends block_base {
             return $this->content;
         }
 
-        $this->content->text = '<div class="cmblock"><a href="'.$CFG->wwwroot.'/blocks/course_management/cm.php">'.get_string('startup','block_course_management').'</a></div>';
+        $this->content->text = '<div class="cmblock"><a href="'.$CFG->wwwroot.'/blocks/course_management/cm.php">'.get_string('blockaction','block_course_management').'</a></div>';
         return $this->content;
     }
 }

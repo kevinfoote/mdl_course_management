@@ -19,7 +19,7 @@ $CM_DEBUG = FALSE;
 //Check user have logged in to the system or not
 require_login();
 
-$blockname = course_management::_s('blockname');
+$blockname = course_management::_s('cm_title_f');
 $header = course_management::_s('cmcreate');
 
 // setup page components 
