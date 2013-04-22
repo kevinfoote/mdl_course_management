@@ -15,7 +15,7 @@ class cm_form extends moodleform {
 
     public function definition() {
         global $CFG, $USER; 
-        $CM_DEBUG=FALSE;
+        $CM_DEBUG = FALSE;
 
         $available = course_management::_s('courselist');
         $term_list = course_management::get_term_list('short');
@@ -72,8 +72,8 @@ class cm_form extends moodleform {
             }
 
             $buttons = array();
-            $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('c_create'));
-            $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
+            $buttons[] =& $mform->createElement('submit', 'createb', course_management::_s('cm_crsreq'));
+            $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cm_revert'));
             $mform->addGroup($buttons, 'buttons', null, array(' '), false);
 
             $mform->addElement('html' , course_management::_s('break2'));
@@ -100,8 +100,8 @@ class cm_form extends moodleform {
                 } 
             }
             $buttons2 = array();
-            $buttons2[] =& $mform->createElement('submit', 'createb', course_management::_s('m_create'));
-            $buttons2[] =& $mform->createElement('reset', 'resetb', course_management::_s('cmrevert'));
+            $buttons2[] =& $mform->createElement('submit', 'createb', course_management::_s('cm_metareq'));
+            $buttons2[] =& $mform->createElement('reset', 'resetb', course_management::_s('cm_revert'));
             $mform->addGroup($buttons2, 'buttons', null, array(' '), false);
             $mform->closeHeaderBefore('buttons');
         }

@@ -14,25 +14,27 @@ require_once("lib.php");
 require_once('cm_form.php');
 
 global $CFG, $USER;
+$CM_DEBUG = FALSE;
 
 //Check user have logged in to the system or not
 require_login();
 
-$blockname = course_management::_s('blockname');
-$header = course_management::_s('cmcreate');
+$fulltitle  = course_management::_s('cm_title_f');
+$shorttitle = course_management::_s('cm_title_s');
+$shortdescr = course_management::_s('cm_shortdes');
 
 // setup page components 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/course_management/cm.php');
-$PAGE->set_title($blockname . ': '. $header);
-$PAGE->set_heading($blockname . ': '.$header);
+$PAGE->set_title($shorttitle . ': '. $shortdescr);
+$PAGE->set_heading($shorttitle . ': '.$shortdescr);
 $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-$PAGE->navbar->add($blockname);
+$PAGE->navbar->add($shorttitle);
 
 // draw page to screen
 echo $OUTPUT->header();
-echo $OUTPUT->heading($blockname);
+echo $OUTPUT->heading($fulltitle);
 
 // CONTENT
 echo $OUTPUT->container(course_management::_s('break1'));
@@ -53,12 +55,21 @@ if ($cm->is_cancelled()) {
 //    }
 
     echo $OUTPUT->container_start();
+
     foreach ($data as $id=>$val) {
-        // ex: 85 is 1 
-        if ($val == 1) {
-            course_management::cm_create_course($id);
+        if ($CM_DEBUG) {
+            echo "[dbg] $id is $val<br>";
         }
-    } 
+
+        if ($val == 1 && is_int($id)) {
+            if (!$CM_DEBUG) {
+                course_management::cm_create_course($id);
+            } else {
+                echo "[dbg] operating on $id<br>";
+            }
+        }
+    }
+
     echo $OUTPUT->container_end();
     
     $cm = new cm_form();
