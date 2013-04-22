@@ -14,6 +14,7 @@ require_once("lib.php");
 require_once('cm_form.php');
 
 global $CFG, $USER;
+$CM_DEBUG = FALSE;
 
 //Check user have logged in to the system or not
 require_login();
@@ -53,12 +54,21 @@ if ($cm->is_cancelled()) {
 //    }
 
     echo $OUTPUT->container_start();
+
     foreach ($data as $id=>$val) {
-        // ex: 85 is 1 
-        if ($val == 1) {
-            course_management::cm_create_course($id);
+        if ($CM_DEBUG) {
+            echo "[dbg] $id is $val<br>";
         }
-    } 
+
+        if ($val == 1 && is_int($id)) {
+            if (!$CM_DEBUG) {
+                course_management::cm_create_course($id);
+            } else {
+                echo "[dbg] operating on $id<br>";
+            }
+        }
+    }
+
     echo $OUTPUT->container_end();
     
     $cm = new cm_form();
