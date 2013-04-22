@@ -19,21 +19,22 @@ $CM_DEBUG = FALSE;
 //Check user have logged in to the system or not
 require_login();
 
-$blockname = course_management::_s('cm_title_f');
-$header = course_management::_s('cmcreate');
+$fulltitle  = course_management::_s('cm_title_f');
+$shorttitle = course_management::_s('cm_title_s');
+$shortdescr = course_management::_s('cm_shortdes');
 
 // setup page components 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/course_management/cm.php');
-$PAGE->set_title($blockname . ': '. $header);
-$PAGE->set_heading($blockname . ': '.$header);
+$PAGE->set_title($shorttitle . ': '. $shortdescr);
+$PAGE->set_heading($shorttitle . ': '.$shortdescr);
 $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-$PAGE->navbar->add($blockname);
+$PAGE->navbar->add($shorttitle);
 
 // draw page to screen
 echo $OUTPUT->header();
-echo $OUTPUT->heading($blockname);
+echo $OUTPUT->heading($fulltitle);
 
 // CONTENT
 echo $OUTPUT->container(course_management::_s('break1'));

@@ -12,6 +12,7 @@
  $string['break2']      = '<br><br>';
  $string['cm_title_s']  = 'Course Management';
  $string['cm_title_f']  = 'Course Management Tool';
+ $string['cm_shortdes'] = 'Tool';
  $string['cm_crsreq']   = 'Create Course';
  $string['cm_revert']   = 'Clear';
  $string['cm_intro']    = '<p align="left">Please choose the course shells you would like to create from the listing below. When finished selecting your course shells use the "Create" button below this section.</p>';
