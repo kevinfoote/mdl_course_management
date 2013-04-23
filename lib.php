@@ -32,12 +32,37 @@ abstract class cm_b {
 }
 
 abstract class course_management extends cm_b {
+    
     static function pluginname() {
         return 'block_course_management';
     }
 
-    // get array of current terms 
-    //   incomming: string full OR short 
+    /* Create a course using CM backing
+     * 
+     * @param $id  cm_course.id of course to create 
+     * @return bool
+     */
+    public static function cm_create_course($id) {
+        global $DB;
+        $retval = false;
+
+        if (course_management::do_make_cshell($id)) {
+            try {
+                course_management::do_set_active($id);
+                course_management::do_set_enrollment($id);
+                $retval = true; 
+            } catch (Exception $e) {
+                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
+            } 
+        }
+        return ($retval);
+    }
+
+    /* Get array of current terms
+     *
+     * @param $type  string  [full || short]
+     * @return $list object
+     */
     public function get_term_list($type) {
         global $DB;
 
@@ -72,7 +97,7 @@ abstract class course_management extends cm_b {
     }
 
     // get array of courses 
-    static function get_course_list($t) {
+    public static function get_course_list($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -88,7 +113,7 @@ abstract class course_management extends cm_b {
     }
     
     // get key pair array of courses for setting up a checkbox UI
-    static function get_course_list_f($t) {
+    public static function get_course_list_f($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -104,7 +129,7 @@ abstract class course_management extends cm_b {
     }
 
     // get key pair array of active courses for setting up a checkbox UI
-    static function get_course_list_a($t) {
+    public static function get_course_list_a($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -119,19 +144,19 @@ abstract class course_management extends cm_b {
         return ($c_list);
     }
 
-    static function get_enrollment($courseshort) {
+    public static function get_enrollment($courseshort) {
         global $DB;
         $retval = false;
         return ($retval);
     }
     
-    static function do_set_enrollment($id) {
+    private static function do_set_enrollment($id) {
         global $DB;
         $retval = false;
         return ($retval);
     }
 
-    static function do_set_active($id) {
+    private static function do_set_active($id) {
         global $DB;
         $table = 'cm_course';
         
@@ -205,21 +230,6 @@ abstract class course_management extends cm_b {
         return ($retval);
     }
     
-    static function cm_create_course($id) {
-        global $DB;
-        $retval = false;
-
-        if (course_management::do_make_cshell($id)) {
-            try {
-                course_management::do_set_active($id);
-                course_management::do_set_enrollment($id);
-                $retval = true; 
-            } catch (Exception $e) {
-                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
-            } 
-        }
-        return ($retval);
-    }
  
     static function do_make_metashell($courseshort) {
         $meta = 1;
