@@ -172,23 +172,30 @@ abstract class course_management extends cm_b {
             $cterm = $DB->get_record_sql($sql,array($id));
 
             // DO create the course
-            $new_cshell->category = $cterm->id;       
-            $new_cshell->fullname = "$course_full";   
-            $new_cshell->shortname = "$course_short"; 
-            $new_cshell->idnumber = "$course_short";  
-            $new_cshell->format = "weeks";
-            $new_cshell->startdate = time();    // need this so weekly outline will display correctly
-            $new_cshell->maxbytes = "52428800"; // This should be a Settings var
-            $new_cshell->visible = 0;
+            $new_cshell->category   = $cterm->id;       
+            $new_cshell->fullname   = "$course_full";   
+            $new_cshell->shortname  = "$course_short"; 
+            $new_cshell->idnumber   = "$course_short";  
+            $new_cshell->format     = "weeks";
+            $new_cshell->startdate  = time();     // need this so weekly outline will display correctly
+            $new_cshell->maxbytes   = "52428800"; // This should be a plugin:settings var
+            $new_cshell->visible    = 0;
             $new_cshell->visibleold = 0;
 
-            try { 
-                $n_course = create_course($new_cshell);
+	    try { 
+                $new_course = create_course($new_cshell);
                 $role = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?',array('editingteacher'));
-                $context = context_course::instance($n_course->id);
-                if (! role_assign($role->id,$USER->id,$context->id) ) {
-                    echo "No Teacher assigned";
-                }  
+                $coursecontext = context_course::instance($new_course->id);
+                role_assign($role->id,$USER->id,$coursecontext->id);
+                $enrolplugin = enrol_get_plugin('manual');
+                $enrolplugin->add_instance($new_course);
+                $enrolinstances = enrol_get_instances($new_course->id, false);
+                foreach ($enrolinstances as $enrolinstance) {
+                    if ($enrolinstance->enrol === 'manual') {
+                        break;
+                    }
+                }
+                $enrolplugin->enrol_user($enrolinstance, $USER->id);
                 $retval = true;
             } catch (Exception $e) {
                 throw new Exception ('Error creating course:'.$course_short, 0, $e);
