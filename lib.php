@@ -48,11 +48,14 @@ abstract class course_management extends cm_b {
 
         if (course_management::do_make_cshell($id)) {
             try {
+
                 course_management::do_set_active($id);
                 $retval = true; 
+
             } catch (Exception $e) {
                 throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
             } 
+
         }
         return ($retval);
     }
@@ -62,13 +65,20 @@ abstract class course_management extends cm_b {
      * @param $id cm_course.id of course
      * @return ?bool?
      */
-    public static cm_add_enrolment( ) {
+    public static function cm_add_enrolment($id) {
     	global $DB, $USER;
        
-        // fetch the cm_enrollments 
-        // enr = course_management::get_enrolment( cm_course.id )
-        // if ( enr ) 
-        //    do_enrol_users( enr, cm_course.id )
+        $courseid = $id;
+        $cmcourse = $DB->get_record('cm_course',array('id'=>$id));
+
+        try { 
+
+            $pop = course_management::get_enrolment($cmcourse->courseshort);
+            course_management::do_enrol_users($pop, $courseid);
+
+        } catch (Exception $e) {
+            throw new Exception('Error Enrollment Failed:'.$cmcourse->courseshort, 0, $e);
+        }
     }
 
     /* Get array of current terms
@@ -159,14 +169,33 @@ abstract class course_management extends cm_b {
 
     public static function get_enrolment($courseshort) {
         global $DB;
-        $retval = false;
-        return ($retval);
+        $courseshort = $courseshort;
+        $table = 'cm_enrollment';
+        $sql = 'SELECT id,username FROM {'.$table.'} WHERE courseshort = ?'; 
+        $result = $DB->get_records_sql($sql,array($courseshort));
+        return ($result);
     }
     
-    private static function do_enrol_users($id) {
+    private static function do_enrol_users($pop, $id) {
         global $DB;
-        $retval = false;
-        return ($retval);
+
+        try { 
+            $sql = 'SELECT * FROM {course} WHERE idnumber = (SELECT courseshort FROM {cm_course} WHERE id = ?)';
+            $course = $DB->get_record_sql($sql,array($id));
+            $role = $DB->get_record('role',array('shortname'=>'student')); 
+            $plugin = enrol_get_plugin('manual');
+            $plugin->add_instance($course);
+            $instance = $DB->get_record('enrol',array('courseid'=>$course->id,'enrol'=>'manual'));
+        
+            foreach ($pop as $enrole) {
+                $user = $DB->get_record('user',array('username'=>$enrole->username));
+                $plugin->enrol_user($instance, $user->id, $role->id);
+            } 
+
+        } catch (Exception $e) {
+            throw new Exception('Error adding enrollment set:'.$course->shortname, 0, $e);
+        }
+
     }
 
     private static function do_set_active($id) {
