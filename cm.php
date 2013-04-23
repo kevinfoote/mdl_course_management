@@ -67,6 +67,8 @@ if ($cm->is_cancelled()) {
             } else {
                 echo "[dbg] operating on $id<br>";
             }
+            // could wrap this in above if
+            course_management::cm_add_enrolment($id);
         }
     }
 

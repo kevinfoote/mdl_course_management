@@ -49,13 +49,26 @@ abstract class course_management extends cm_b {
         if (course_management::do_make_cshell($id)) {
             try {
                 course_management::do_set_active($id);
-                course_management::do_set_enrollment($id);
                 $retval = true; 
             } catch (Exception $e) {
                 throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
             } 
         }
         return ($retval);
+    }
+
+    /* Add the known enrolment to the course
+     * 
+     * @param $id cm_course.id of course
+     * @return ?bool?
+     */
+    public static cm_add_enrolment( ) {
+    	global $DB, $USER;
+       
+        // fetch the cm_enrollments 
+        // enr = course_management::get_enrolment( cm_course.id )
+        // if ( enr ) 
+        //    do_enrol_users( enr, cm_course.id )
     }
 
     /* Get array of current terms
@@ -144,13 +157,13 @@ abstract class course_management extends cm_b {
         return ($c_list);
     }
 
-    public static function get_enrollment($courseshort) {
+    public static function get_enrolment($courseshort) {
         global $DB;
         $retval = false;
         return ($retval);
     }
     
-    private static function do_set_enrollment($id) {
+    private static function do_enrol_users($id) {
         global $DB;
         $retval = false;
         return ($retval);
