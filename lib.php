@@ -32,12 +32,60 @@ abstract class cm_b {
 }
 
 abstract class course_management extends cm_b {
+    
     static function pluginname() {
         return 'block_course_management';
     }
 
-    // get array of current terms 
-    //   incomming: string full OR short 
+    /* Create a course using CM backing
+     * 
+     * @param $id  cm_course.id of course to create 
+     * @return bool
+     */
+    public static function cm_create_course($id) {
+        global $DB;
+        $retval = false;
+
+        if (course_management::do_make_cshell($id)) {
+            try {
+
+                course_management::do_set_active($id);
+                $retval = true; 
+
+            } catch (Exception $e) {
+                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
+            } 
+
+        }
+        return ($retval);
+    }
+
+    /* Add the known enrolment to the course
+     * 
+     * @param $id cm_course.id of course
+     * @return ?bool?
+     */
+    public static function cm_add_enrolment($id) {
+    	global $DB, $USER;
+       
+        $courseid = $id;
+        $cmcourse = $DB->get_record('cm_course',array('id'=>$id));
+
+        try { 
+
+            $pop = course_management::get_enrolment($cmcourse->courseshort);
+            course_management::do_enrol_users($pop, $courseid);
+
+        } catch (Exception $e) {
+            throw new Exception('Error Enrollment Failed:'.$cmcourse->courseshort, 0, $e);
+        }
+    }
+
+    /* Get array of current terms
+     *
+     * @param $type  string  [full || short]
+     * @return $list object
+     */
     public function get_term_list($type) {
         global $DB;
 
@@ -72,7 +120,7 @@ abstract class course_management extends cm_b {
     }
 
     // get array of courses 
-    static function get_course_list($t) {
+    public static function get_course_list($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -88,7 +136,7 @@ abstract class course_management extends cm_b {
     }
     
     // get key pair array of courses for setting up a checkbox UI
-    static function get_course_list_f($t) {
+    public static function get_course_list_f($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -104,7 +152,7 @@ abstract class course_management extends cm_b {
     }
 
     // get key pair array of active courses for setting up a checkbox UI
-    static function get_course_list_a($t) {
+    public static function get_course_list_a($t) {
         global $DB, $USER;
 
         $termcode = $t; 
@@ -119,19 +167,38 @@ abstract class course_management extends cm_b {
         return ($c_list);
     }
 
-    static function get_enrollment($courseshort) {
+    public static function get_enrolment($courseshort) {
         global $DB;
-        $retval = false;
-        return ($retval);
+        $courseshort = $courseshort;
+        $table = 'cm_enrollment';
+        $sql = 'SELECT id,username FROM {'.$table.'} WHERE courseshort = ?'; 
+        $result = $DB->get_records_sql($sql,array($courseshort));
+        return ($result);
     }
     
-    static function do_set_enrollment($id) {
+    private static function do_enrol_users($pop, $id) {
         global $DB;
-        $retval = false;
-        return ($retval);
+
+        try { 
+            $sql = 'SELECT * FROM {course} WHERE idnumber = (SELECT courseshort FROM {cm_course} WHERE id = ?)';
+            $course = $DB->get_record_sql($sql,array($id));
+            $role = $DB->get_record('role',array('shortname'=>'student')); 
+            $plugin = enrol_get_plugin('manual');
+            $plugin->add_instance($course);
+            $instance = $DB->get_record('enrol',array('courseid'=>$course->id,'enrol'=>'manual'));
+        
+            foreach ($pop as $enrole) {
+                $user = $DB->get_record('user',array('username'=>$enrole->username));
+                $plugin->enrol_user($instance, $user->id, $role->id);
+            } 
+
+        } catch (Exception $e) {
+            throw new Exception('Error adding enrollment set:'.$course->shortname, 0, $e);
+        }
+
     }
 
-    static function do_set_active($id) {
+    private static function do_set_active($id) {
         global $DB;
         $table = 'cm_course';
         
@@ -172,23 +239,30 @@ abstract class course_management extends cm_b {
             $cterm = $DB->get_record_sql($sql,array($id));
 
             // DO create the course
-            $new_cshell->category = $cterm->id;       
-            $new_cshell->fullname = "$course_full";   
-            $new_cshell->shortname = "$course_short"; 
-            $new_cshell->idnumber = "$course_short";  
-            $new_cshell->format = "weeks";
-            $new_cshell->startdate = time();    // need this so weekly outline will display correctly
-            $new_cshell->maxbytes = "52428800"; // This should be a Settings var
-            $new_cshell->visible = 0;
+            $new_cshell->category   = $cterm->id;       
+            $new_cshell->fullname   = "$course_full";   
+            $new_cshell->shortname  = "$course_short"; 
+            $new_cshell->idnumber   = "$course_short";  
+            $new_cshell->format     = "weeks";
+            $new_cshell->startdate  = time();     // need this so weekly outline will display correctly
+            $new_cshell->maxbytes   = "52428800"; // This should be a plugin:settings var
+            $new_cshell->visible    = 0;
             $new_cshell->visibleold = 0;
 
-            try { 
-                $n_course = create_course($new_cshell);
+	    try { 
+                $new_course = create_course($new_cshell);
                 $role = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?',array('editingteacher'));
-                $context = context_course::instance($n_course->id);
-                if (! role_assign($role->id,$USER->id,$context->id) ) {
-                    echo "No Teacher assigned";
-                }  
+                $coursecontext = context_course::instance($new_course->id);
+                role_assign($role->id,$USER->id,$coursecontext->id);
+                $enrolplugin = enrol_get_plugin('manual');
+                $enrolplugin->add_instance($new_course);
+                $enrolinstances = enrol_get_instances($new_course->id, false);
+                foreach ($enrolinstances as $enrolinstance) {
+                    if ($enrolinstance->enrol === 'manual') {
+                        break;
+                    }
+                }
+                $enrolplugin->enrol_user($enrolinstance, $USER->id);
                 $retval = true;
             } catch (Exception $e) {
                 throw new Exception ('Error creating course:'.$course_short, 0, $e);
@@ -198,21 +272,6 @@ abstract class course_management extends cm_b {
         return ($retval);
     }
     
-    static function cm_create_course($id) {
-        global $DB;
-        $retval = false;
-
-        if (course_management::do_make_cshell($id)) {
-            try {
-                course_management::do_set_active($id);
-                course_management::do_set_enrollment($id);
-                $retval = true; 
-            } catch (Exception $e) {
-                throw new Exception('Error doing post setup of course cmid:'.$id, 0, $e);
-            } 
-        }
-        return ($retval);
-    }
  
     static function do_make_metashell($courseshort) {
         $meta = 1;
