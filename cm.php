@@ -41,22 +41,25 @@ echo $OUTPUT->container(course_management::_s('break1'));
 echo $OUTPUT->container(course_management::_s('cm_intro'));
 echo $OUTPUT->container(course_management::_s('break1'));
 
-$cm = new cm_form();
+$cmf1 = new cm_form1(); // Course form
+$cmf2 = new cm_form2(); // MetaCourse form
 
-if ($cm->is_cancelled()) {
-
+if ($cmf1->is_cancelled() || $cmf2->is_cancelled()) {
+    // redirect back to "My Moodle"
     redirect("$CFG->wwwroot/my/");
+}
 
-} else if ($data = $cm->get_data()) { 
+echo $OUTPUT->container_start();
+
+if ($cfm1_data = $cmf1->get_data()) { 
 
 //    foreach ($warnings as $type => $warning) {
 //        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
 //        echo $OUTPUT->notification($warning, $class);
 //    }
 
-    echo $OUTPUT->container_start();
 
-    foreach ($data as $id=>$val) {
+    foreach ($cfm1_data as $id=>$val) {
         if ($CM_DEBUG) {
             echo "[dbg] $id is $val<br>";
         }
@@ -64,31 +67,43 @@ if ($cm->is_cancelled()) {
         if ($val == 1 && is_int($id)) {
             if (!$CM_DEBUG) {
                 course_management::cm_create_course($id);
+                course_management::cm_add_enrolment($id);
             } else {
                 echo "[dbg] operating on $id<br>";
             }
-            // could wrap this in above if
-            course_management::cm_add_enrolment($id);
         }
     }
 
-    echo $OUTPUT->container_end();
-    
-    $cm = new cm_form();
+    if ($CM_DEBUG) {
+        echo $OUTPUT->container_end();
+        break;
+    }
 
-    echo $OUTPUT->container($cm->display());
-    echo $OUTPUT->footer();
+    redirect($PAGE->url);
 
-} else {
-
-    echo $OUTPUT->container($cm->display());
-
-//    foreach ($warnings as $type => $warning) {
-//        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
-//        echo $OUTPUT->notification($warning, $class);
-//    }
-
-    echo $OUTPUT->footer();
 }
+
+if ($cfm2_data = $cmf2->get_data()) {
+ 
+    foreach ($cfm2_data as $id=>$val) {
+        if ($CM_DEBUG) {
+            echo "[dbg] $id is $val<br>";
+        }
+        
+        if ($val == 1) {
+        }
+    }
+
+    if ($CM_DEBUG) {
+        echo $OUTPUT->container_end();
+        break;
+    }
+
+    redirect($PAGE->url);
+}
+
+echo $OUTPUT->container($cmf1->display());
+echo $OUTPUT->container($cmf2->display());
+echo $OUTPUT->footer();
 
 ?>
