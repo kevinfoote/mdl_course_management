@@ -5,7 +5,7 @@
 require_once($CFG->libdir.'/formslib.php');
 require_once('lib.php');
 
-class cm_form1 extends moodleform {
+class cm_form_course extends moodleform {
 
     public function definition() {
         global $CFG, $USER; 
@@ -66,24 +66,10 @@ class cm_form1 extends moodleform {
             }
 
             $buttons = array();
-            $buttons[] =& $mform->createElement('submit', 'create1', course_management::_s('cm_crsreq'));
+            $buttons[] =& $mform->createElement('submit', 'createcourse', course_management::_s('cm_crsreq'));
             $buttons[] =& $mform->createElement('reset', 'resetb', course_management::_s('cm_revert'));
             $mform->addGroup($buttons, 'buttons', null, array(' '), false);
-
-            $mform->addElement('html' , course_management::_s('break2'));
-
-            $previous_heading = '<div style="text-align:left;float:none">'
-                .'<b>'.course_management::_s('t_previous').'</b></div>';
-            $mform->addElement('html' , $previous_heading);
-
-            $meta_info = course_management::_s('break2') 
-                .'<div style="text-align:left;float:none">'
-                .course_management::_s('meta_intro').'</div><br>';
-
-            $mform->addElement('html' , $meta_info);
-
             $mform->closeHeaderBefore('buttons');
-
         }
     }
 

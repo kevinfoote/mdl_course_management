@@ -41,8 +41,8 @@ echo $OUTPUT->container(course_management::_s('break1'));
 echo $OUTPUT->container(course_management::_s('cm_intro'));
 echo $OUTPUT->container(course_management::_s('break1'));
 
-$cmf1 = new cm_form1(); // Course form
-$cmf2 = new cm_form2(); // MetaCourse form
+$cmf1 = new cm_form_course(); // Course form
+$cmf2 = new cm_form_meta(); // MetaCourse form
 
 if ($cmf1->is_cancelled() || $cmf2->is_cancelled()) {
     // redirect back to "My Moodle"
