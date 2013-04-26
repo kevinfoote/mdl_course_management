@@ -23,44 +23,45 @@ $fulltitle  = course_management::_s('cm_title_f');
 $shorttitle = course_management::_s('cm_title_s');
 $shortdescr = course_management::_s('cm_shortdes');
 
-// setup page components 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url('/blocks/course_management/cm.php');
-$PAGE->set_title($shorttitle . ': '. $shortdescr);
-$PAGE->set_heading($shorttitle . ': '.$shortdescr);
-$PAGE->set_pagelayout('standard');
-$PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
-$PAGE->navbar->add($shorttitle);
 
-// draw page to screen
-echo $OUTPUT->header();
-echo $OUTPUT->heading($fulltitle);
+if($term_list=course_management::get_term_list('short')) {
+    $warning[] = course_management::_s('cm_noload');
+}
 
-// CONTENT
-echo $OUTPUT->container(course_management::_s('break1'));
-echo $OUTPUT->container(course_management::_s('cm_intro'));
-echo $OUTPUT->container(course_management::_s('break1'));
+if ($CM_DEBUG) {       // setup a debug page
+    $PAGE->set_url('/blocks/course_management/cm.php');
+    $PAGE->set_title($shorttitle . ': '. $shortdescr.'DEBUG');
+    $PAGE->set_heading($shorttitle . ': '.$shortdescr);
+    $PAGE->set_pagelayout('standard');
+    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
+    $PAGE->navbar->add($shorttitle);
+
+    // draw page to screen
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading($fulltitle);
+
+    // CONTENT
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container(course_management::_s('cm_intro'));
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container('DEBUG MODE');
+    echo $OUTPUT->container(course_management::_s('break1'));
+}
 
 $cmf1 = new cm_form_course(); // Course form
-$cmf2 = new cm_form_meta(); // MetaCourse form
+$cmf2 = new cm_form_meta();   // MetaCourse form
 
+// if we are in a cancel we should go back to /my
 if ($cmf1->is_cancelled() || $cmf2->is_cancelled()) {
-    // redirect back to "My Moodle"
     redirect("$CFG->wwwroot/my/");
 }
 
-echo $OUTPUT->container_start();
-
 if ($cfm1_data = $cmf1->get_data()) { 
-
-//    foreach ($warnings as $type => $warning) {
-//        $class = ($type == 'success') ? 'notifysuccess' : 'notifyproblem';
-//        echo $OUTPUT->notification($warning, $class);
-//    }
-
 
     foreach ($cfm1_data as $id=>$val) {
         if ($CM_DEBUG) {
+            echo $OUTPUT->container_start();
             echo "[dbg] $id is $val<br>";
         }
 
@@ -74,13 +75,11 @@ if ($cfm1_data = $cmf1->get_data()) {
         }
     }
 
-    if ($CM_DEBUG) {
+    if (!$CM_DEBUG) {
+        redirect($PAGE->url);
+    } else {
         echo $OUTPUT->container_end();
-        break;
     }
-
-    redirect($PAGE->url);
-
 }
 
 if ($cfm2_data = $cmf2->get_data()) {
@@ -94,12 +93,30 @@ if ($cfm2_data = $cmf2->get_data()) {
         }
     }
 
-    if ($CM_DEBUG) {
+    if (!$CM_DEBUG) {
+        redirect($PAGE->url);
+    } else {
         echo $OUTPUT->container_end();
-        break;
     }
+}
 
-    redirect($PAGE->url);
+if (!$CM_DEBUG) {
+    // setup page components 
+    $PAGE->set_url('/blocks/course_management/cm.php');
+    $PAGE->set_title($shorttitle . ': '. $shortdescr);
+    $PAGE->set_heading($shorttitle . ': '.$shortdescr);
+    $PAGE->set_pagelayout('standard');
+    $PAGE->navbar->add(get_string('myhome'), new moodle_url('/my/'));
+    $PAGE->navbar->add($shorttitle);
+
+    // draw page to screen
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading($fulltitle);
+
+    // CONTENT
+    echo $OUTPUT->container(course_management::_s('break1'));
+    echo $OUTPUT->container(course_management::_s('cm_intro'));
+    echo $OUTPUT->container(course_management::_s('break1'));
 }
 
 echo $OUTPUT->container($cmf1->display());
