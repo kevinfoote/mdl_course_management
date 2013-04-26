@@ -11,7 +11,8 @@ require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once('block_course_management.php');
 require_once("lib.php");
-require_once('cm_form.php');
+require_once('cm_form_course.php');
+require_once('cm_form_meta.php');
 
 global $CFG, $USER;
 $CM_DEBUG = FALSE;
