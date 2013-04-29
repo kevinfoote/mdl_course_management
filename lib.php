@@ -45,11 +45,17 @@ abstract class course_management extends cm_b {
     public static function cm_create_course($id) {
         global $DB;
         $retval = false;
+        $table = 'cm_course';
 
         if (course_management::do_make_cshell($id)) {
             try {
 
-                course_management::do_set_active($id);
+                $sql = 'SELECT id FROM {'.$table.'} WHERE id = ? OR courseshort = (SELECT courseshort FROM {'.$table.'} WHERE id = ?)';
+                $cmcourse = $DB->get_records_sql($sql,array($id,$id));
+
+                foreach($cmcourse as $cmrec) {
+                    course_management::do_set_active($cmrec->id);
+                }
                 $retval = true; 
 
             } catch (Exception $e) {
@@ -277,5 +283,6 @@ abstract class course_management extends cm_b {
         $meta = 1;
         return;
     }
+
 }
 ?>
