@@ -37,7 +37,13 @@ class cm_form_meta extends moodleform {
 
             $mform->addElement('html' , $meta_info);
 
-            $mform->addElement('text','metaname','Meta Course Name',array('size'=>'50'));
+            $mform->addElement('text','metaname',course_management::_s('meta_name'),array('size'=>'48'));
+
+            $mform->addElement('text','breadcrumb',course_management::_s('meta_bread'),array('size'=>'17'));
+
+            $mform->addHelpButton('metaname', 'metanameabout', 'block_course_management');
+
+            $mform->addHelpButton('breadcrumb', 'metabcabout', 'block_course_management');
 
             foreach ($term_list as $term) {
                 $course_menu = course_management::get_course_list_a($term);
