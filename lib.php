@@ -66,6 +66,13 @@ abstract class course_management extends cm_b {
         return ($retval);
     }
 
+    /* Create a Meta course using CM backing
+     * 
+     */
+    public static function cm_create_metacourse() {
+        return(TRUE);
+    }
+
     /* Add the known enrolment to the course
      * 
      * @param $id cm_course.id of course
@@ -86,6 +93,16 @@ abstract class course_management extends cm_b {
             throw new Exception('Error Enrollment Failed:'.$cmcourse->courseshort, 0, $e);
         }
     }
+
+    /* Validate the string data that comes in from form
+     * 
+     * @param $in stdClass form values
+     * @return ?bool?
+     */
+    public function cm_valid_metareq($in) {
+        global $DB;
+        // internal to check string data
+    } 
 
     /* Get array of current terms
      *
