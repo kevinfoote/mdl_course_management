@@ -94,11 +94,11 @@ if ($cfm2_data = $cmf2->get_data()) {
     }
 
     if (empty($cfm2_data->metaname)) {
-        $warnings[] = "You must include a Meta Course Name";
+        $warnings[] = course_management::_s('no_mname'); 
     }
 
     if (empty($cfm2_data->breadcrumb)) {
-        $warnings[] = "You must include a Breadcrumb";
+        $warnings[] = course_management::_s('no_bcrumb'); 
     }
 
     //if (empty($warnings) && course_management::cm_valid_metareq($cfm2_data)) { 
