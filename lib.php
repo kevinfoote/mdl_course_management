@@ -70,7 +70,12 @@ abstract class course_management extends cm_b {
      * 
      */
     public static function cm_create_metacourse() {
-        return(TRUE);
+        global $DB;
+        $retval = false;
+        $table = 'cm_course';
+        // course_management::do_make_metacourse();
+        // course_management::do_set_metause();
+        return($retval);
     }
 
     /* Add the known enrolment to the course

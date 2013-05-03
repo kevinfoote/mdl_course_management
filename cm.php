@@ -90,7 +90,6 @@ if ($cfm2_data = $cmf2->get_data()) {
         foreach ($cfm2_data as $id=>$val) {
             echo "[dbg] $id is $val<br>";
         }
-        echo $OUTPUT->container_end();
     }
 
     if (empty($cfm2_data->metaname)) {
@@ -103,12 +102,30 @@ if ($cfm2_data = $cmf2->get_data()) {
 
     //if (empty($warnings) && course_management::cm_valid_metareq($cfm2_data)) { 
     if (empty($warnings)) {
-        // make cm_meta_course
-        // set sub courses metause flag
-        // then redirect
-        redirect($PAGE->url);
-    }
 
+        $metareq = new stdClass;
+
+        $metareq->titlestring  = $cfm2_data->metaname;
+        $metareq->breadcrumb   = $cfm2_data->breadcrumb; 
+
+        foreach ($cfm2_data as $id=>$val) {
+            if ($val == 1 && is_int($id)) {
+                $child_cmrecords[] = $id; 
+            }   
+        }
+
+        $metareq->childarray  = $child_cmrecords;
+
+        if (!$CM_DEBUG) {
+            // make ... cm_create_metacourse($metareq);
+            redirect($PAGE->url);
+        } else {
+            echo "[dbg] metareq obj<br>";
+            //var_dump($metareq);
+            print_r($metareq);
+            echo $OUTPUT->container_end();
+        }
+    }
 }
 
 if (!$CM_DEBUG) {
