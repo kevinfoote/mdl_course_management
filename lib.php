@@ -69,12 +69,22 @@ abstract class course_management extends cm_b {
     /* Create a Meta course using CM backing
      * 
      */
-    public static function cm_create_metacourse() {
-        global $DB;
+    public static function cm_create_metacourse($metareq) {
+        global $DB, $USER;
         $retval = false;
         $table = 'cm_course';
-        // course_management::do_make_metacourse();
-        // course_management::do_set_metause();
+
+        $c1_rec = $DB->get_record($table,array('id'=>$in_children[0]));
+
+        $termid = $c1_rec->termcode;
+
+        try {
+            course_management::do_make_metacourse($metareq,$termid);
+            //course_management::do_set_metause();
+            $retval = true;
+        } catch (Exception $e) {
+            throw new Exception('Error creating meta-course:'.$USER->username.$metareq->breadcrumb, 0, $e);
+        }
         return($retval);
     }
 
@@ -245,7 +255,6 @@ abstract class course_management extends cm_b {
 
         $retval = FALSE;
         $table = 'cm_course';
-        $meta = 0;
 
         $sql = 'SELECT * FROM {'.$table.'} WHERE id = ?';
         $cm_data = $DB->get_record_sql($sql,array($id)); 
@@ -301,9 +310,57 @@ abstract class course_management extends cm_b {
     }
     
  
-    static function do_make_metashell($courseshort) {
-        $meta = 1;
-        return;
+    static function do_make_metacourse($metaobj) {
+        global $DB, $CFG, $USER;
+        require_once($CFG->dirroot .'/course/lib.php');
+ 
+        $retval = false;
+        $table = 'cm_course';
+
+        $table = 'cm_course';
+        $in_title    = $metareq->titlestring;
+        $in_bcrumb   = $metareq->breadcrumb;
+        $in_children = $metareq->childarray;
+        
+        $c1_rec = $DB->get_record($table,array('id'=>$in_children[0]));
+
+        $termstring = course_management::get_term_name($c1_rec->termcode);
+
+        $course_full  = $termstring . " " . $USER->username . " Meta " . $in_title;
+        $course_short = $cl_rec->termcode . $USER->username . "-meta-" . $in_bcrumb;
+        $course_id    = str_replace(' ', '', $course_short);
+        $course_id    = str_replace('-', '', $course_id);
+        $course_id    = strtoupper($c_idnumber);
+        
+        // Check for a previous instance of this course
+        $sql = 'SELECT * FROM {course} WHERE shortname = ?';
+        $array = array($course_short);
+        
+        if (!$course) {
+            
+            $term_category = $DB->get_record('course_categories',array('idnumber'=>"$c1_rec->termcode"));
+        
+            $new_meta = new stdClass;
+
+            $new_meta->category   = $term_category->id;
+            $new_meta->fullname   = $course_full;
+            $new_meta->shortname  = $course_short;
+            $new_meta->idnumber   = $course_id;
+            $new_meta->format     = "weeks";
+            $new_meta->startdate  = time();
+            $new_meta->maxbytes   = "52428800";
+            $new_meta->visible    = 0;
+            $new_meta->visibleold = 0;
+            
+            try {
+                $new_course = create_course($new_mshell);
+            } catch (Exception $e) {
+                throw new Exception ('Error creating course:'.$course_short, 0, $e);
+            }
+            
+        } 
+        
+        return($retval);
     }
 
 }
