@@ -23,6 +23,8 @@
  $string['meta_name']   = 'Meta Course Name';
  $string['meta_bread']  = 'Breadcrumb';
  $string['nocourse']    = 'N/A';
+ $string['no_mname']    = 'You must include a Meta Course Name';
+ $string['no_bcrumb']   = 'You must include a Breadcrumb';
  $string['pluginname']  = 'Course Management';
  $string['t_previous']  = 'Previously Created Course Shells';
  $string['t_available'] = 'Available Courses to Create';

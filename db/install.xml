@@ -6,16 +6,21 @@
   <TABLES>
     <TABLE NAME="cm_course" COMMENT="Course Management course table" NEXT="cm_enrollment">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="coursefull"/>
-        <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="id" NEXT="courseshort"/>
-        <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="coursefull" NEXT="instructor"/>
-        <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseshort" NEXT="termcode"/>
-        <FIELD NAME="termcode" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
-        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="termcode"/>
+         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="coursefull"/>
+         <FIELD NAME="coursefull" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="course full name" PREVIOUS="id" NEXT="courseshort"/>
+         <FIELD NAME="courseshort" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="short name of course" PREVIOUS="coursefull" NEXT="instructor"/>
+         <FIELD NAME="instructor" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseshort" NEXT="termcode"/>
+         <FIELD NAME="termcode" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor" NEXT="active"/>
+         <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has course been created" PREVIOUS="termcode" NEXT="metause"/>
+         <FIELD NAME="metause" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Is used in meta course" PREVIOUS="active"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="cm_course_ix" UNIQUE="false" FIELDS="courseshort" NEXT="cm_instructor_ix"/>
+        <INDEX NAME="cm_instructor_ix" UNIQUE="false" FIELDS="instructor" PREVIOUS="cm_course_ix"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="cm_enrollment" COMMENT="Course Management enrollment table" PREVIOUS="cm_course" NEXT="cm_term">
       <FIELDS>
@@ -26,6 +31,10 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="cm_course_ix" UNIQUE="false" FIELDS="courseshort" NEXT="cm_username_ix"/>
+        <INDEX NAME="cm_username_ix" UNIQUE="false" FIELDS="username" PREVIOUS="cm_course_ix"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="cm_term" COMMENT="Course Management term" PREVIOUS="cm_enrollment">
       <FIELDS>
