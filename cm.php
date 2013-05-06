@@ -117,7 +117,9 @@ if ($cfm2_data = $cmf2->get_data()) {
         $metareq->childarray  = $child_cmrecords;
 
         if (!$CM_DEBUG) {
-            // make ... cm_create_metacourse($metareq);
+
+            cm_create_metacourse($metareq);
+
             redirect($PAGE->url);
         } else {
             echo "[dbg] metareq obj<br>";

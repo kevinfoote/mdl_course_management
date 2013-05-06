@@ -74,16 +74,19 @@ abstract class course_management extends cm_b {
         $retval = false;
         $table = 'cm_course';
 
-        $c1_rec = $DB->get_record($table,array('id'=>$in_children[0]));
+        $ccarray = $metareq->childarray;
+
+        $sql = 'SELECT * FROM {'.$table.'} WHERE id  = ?';
+        $c1_rec = $DB->get_record_sql($sql,array($ccarray[0]));
 
         $termid = $c1_rec->termcode;
 
         try {
             course_management::do_make_metacourse($metareq,$termid);
-            //course_management::do_set_metause();
+            //course_management::do_set_metause($ccarray);
             $retval = true;
         } catch (Exception $e) {
-            throw new Exception('Error creating meta-course:'.$USER->username.$metareq->breadcrumb, 0, $e);
+            throw new Exception('Error: ['.$termid.']['.$USER->username.'] '.$e, 0, $e);
         }
         return($retval);
     }
@@ -236,6 +239,9 @@ abstract class course_management extends cm_b {
 
     }
 
+    /* Set the active flag on cm record
+     *
+     */
     private static function do_set_active($id) {
         global $DB;
         $table = 'cm_course';
@@ -245,6 +251,26 @@ abstract class course_management extends cm_b {
         $data_record->active = 1;
         
         $retval = $DB->update_record($table,$data_record, $bulk=false);
+        
+        return ($retval);
+    }
+
+    /* Set the metause flag on the cm records
+     *
+     * @param array of cm_course.id
+     * @return bool
+     */
+    private static function do_set_metause($array) {
+        global $DB;
+        $table = 'cm_course';
+        
+        foreach ($array as $id) { 
+            $data_record = new stdClass;
+            $data_record->id = (int)$id;
+            $data_record->metause = 1;
+        
+            $retval = $DB->update_record($table,$data_record, $bulk=false);
+        }
         
         return ($retval);
     }
@@ -317,28 +343,26 @@ abstract class course_management extends cm_b {
         $retval = false;
         $table = 'cm_course';
 
-        $table = 'cm_course';
-        $in_title    = $metareq->titlestring;
-        $in_bcrumb   = $metareq->breadcrumb;
-        $in_children = $metareq->childarray;
+        $in_title    = $metaobj->titlestring;
+        $in_bcrumb   = $metaobj->breadcrumb;
+        $in_children = $metaobj->childarray;
         
-        $c1_rec = $DB->get_record($table,array('id'=>$in_children[0]));
-
-        $termstring = course_management::get_term_name($c1_rec->termcode);
+        $termstring = course_management::get_term_name($termid);
 
         $course_full  = $termstring . " " . $USER->username . " Meta " . $in_title;
-        $course_short = $cl_rec->termcode . $USER->username . "-meta-" . $in_bcrumb;
-        $course_id    = str_replace(' ', '', $course_short);
+        $course_short = $termid . '-' . $USER->username . "-meta-" . $in_bcrumb;
+        $course_short = strtoupper($course_short);
+        $course_id    = $course_short;
         $course_id    = str_replace('-', '', $course_id);
-        $course_id    = strtoupper($c_idnumber);
-        
+
         // Check for a previous instance of this course
         $sql = 'SELECT * FROM {course} WHERE shortname = ?';
         $array = array($course_short);
+        $course = $DB->get_record_sql($sql,$array);
         
         if (!$course) {
             
-            $term_category = $DB->get_record('course_categories',array('idnumber'=>"$c1_rec->termcode"));
+            $term_category = $DB->get_record('course_categories',array('idnumber'=>"$termid"));
         
             $new_meta = new stdClass;
 
@@ -353,9 +377,24 @@ abstract class course_management extends cm_b {
             $new_meta->visibleold = 0;
             
             try {
-                $new_course = create_course($new_mshell);
+                $new_course = create_course($new_meta);
+                $role = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?',array('editingteacher'));
+                $coursecontext = context_course::instance($new_course->id);
+                role_assign($role->id,$USER->id,$coursecontext->id);
+                $enrolplugin = enrol_get_plugin('manual');
+                $enrolplugin->add_instance($new_course);
+                $enrolinstances = enrol_get_instances($new_course->id, false);
+                foreach ($enrolinstances as $enrolinstance) {
+                    if ($enrolinstance->enrol === 'manual') {
+                        break;
+                    }
+                }
+                $enrolplugin->enrol_user($enrolinstance, $USER->id);
+                $retval = true;
             } catch (Exception $e) {
-                throw new Exception ('Error creating course:'.$course_short, 0, $e);
+                throw new Exception ('[Error] creating course: '.
+                  ' '.$course_full.' '.$course_short.' '.$term_category->id.' ',0,
+                $e);
             }
             
         } 
