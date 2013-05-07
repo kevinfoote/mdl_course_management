@@ -208,6 +208,22 @@ abstract class course_management extends cm_b {
         return ($c_list);
     }
 
+    // get key pair array of active = 1 and metause = 0 courses 
+    public static function get_course_list_meta_a($t) {
+        global $DB, $USER;
+
+        $termcode = $t; 
+        $table = 'cm_course';
+        $user = $USER->username; 
+
+        $sql = 'SELECT id,coursefull FROM {'.$table.'} WHERE active = ? AND metause = ? AND termcode = ? AND instructor = ?';
+        $array = array(1,0,$termcode,$user);
+        
+        $c_list = $DB->get_records_sql_menu($sql,$array);
+        
+        return ($c_list);
+    }
+
     public static function get_enrolment($courseshort) {
         global $DB;
         $courseshort = $courseshort;
