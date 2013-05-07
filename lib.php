@@ -82,7 +82,8 @@ abstract class course_management extends cm_b {
         $termid = $c1_rec->termcode;
 
         try {
-            course_management::do_make_metacourse($metareq,$termid);
+            $metacourse = course_management::do_make_metacourse($metareq,$termid);
+            course_management::do_meta_enrol($metacourse,$ccarray);
             course_management::do_set_metause($ccarray);
             $retval = true;
         } catch (Exception $e) {
@@ -255,6 +256,28 @@ abstract class course_management extends cm_b {
 
     }
 
+    /* Add child courses to the meta parent
+     *
+     * @param $parent Parent course object
+     * @param $ccarray Array of cm_course id to add as children
+     * @return 
+     */
+    private static function do_meta_enrol($parent,$ccarray) {
+        global $DB;
+
+        try {
+            $enrol = enrol_get_plugin('meta');
+            foreach ($ccarray as $cmchild) {
+                $sql = 'SELECT * FROM {course} WHERE idnumber = (SELECT courseshort FROM {cm_course} WHERE id = ?)';
+                $childcourse = $DB->get_record_sql($sql,array($cmchild));
+                $eid = $enrol->add_instance($parent, array($childcourse->id));
+            }
+            enrol_meta_sync($parent->id);
+        } catch (Exception $e) {
+            throw new Exception ('[[ERROR]] faild to add child '.$e,0,$e);
+        }
+    }
+
     /* Set the active flag on cm record
      *
      */
@@ -406,7 +429,7 @@ abstract class course_management extends cm_b {
                     }
                 }
                 $enrolplugin->enrol_user($enrolinstance, $USER->id);
-                $retval = true;
+                $retval = $new_course;
             } catch (Exception $e) {
                 throw new Exception ('[Error] creating course: '.
                   ' '.$course_full.' '.$course_short.' '.$term_category->id.' ',0,
