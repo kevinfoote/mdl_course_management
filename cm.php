@@ -118,7 +118,7 @@ if ($cfm2_data = $cmf2->get_data()) {
 
         if (!$CM_DEBUG) {
 
-            cm_create_metacourse($metareq);
+            course_management::cm_create_metacourse($metareq);
 
             redirect($PAGE->url);
         } else {

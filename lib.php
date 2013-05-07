@@ -83,7 +83,7 @@ abstract class course_management extends cm_b {
 
         try {
             course_management::do_make_metacourse($metareq,$termid);
-            //course_management::do_set_metause($ccarray);
+            course_management::do_set_metause($ccarray);
             $retval = true;
         } catch (Exception $e) {
             throw new Exception('Error: ['.$termid.']['.$USER->username.'] '.$e, 0, $e);
@@ -336,7 +336,7 @@ abstract class course_management extends cm_b {
     }
     
  
-    static function do_make_metacourse($metaobj) {
+    static function do_make_metacourse($metaobj,$termid) {
         global $DB, $CFG, $USER;
         require_once($CFG->dirroot .'/course/lib.php');
  
