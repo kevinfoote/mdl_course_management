@@ -28,7 +28,7 @@ class cm_form_meta extends moodleform {
             $mform->addElement('html' , course_management::_s('break2'));
 
             $previous_heading = '<div style="text-align:left;float:none">'
-                .'<b>'.course_management::_s('t_previous').'</b></div>';
+                .'<b>'.course_management::_s('t_meta').'</b></div>';
             $mform->addElement('html' , $previous_heading);
 
             $meta_info = course_management::_s('break2') 

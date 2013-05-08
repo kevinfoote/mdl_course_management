@@ -6,6 +6,8 @@
  * @author iup.edu
  */
 
+ $string['course_management:addinstance'] = "Add a new Course Management block";
+ $string['course_management:createshell'] = "Allow user to create course shells using Course Management backing data";
  $string['action']      = 'Action';
  $string['blockname']   = 'Course Management';
  $string['break1']      = '<br>';
@@ -26,7 +28,7 @@
  $string['no_mname']    = 'You must include a Meta Course Name';
  $string['no_bcrumb']   = 'You must include a Breadcrumb';
  $string['pluginname']  = 'Course Management';
- $string['t_previous']  = 'Previously Created Course Shells';
+ $string['t_meta']      = 'Meta Course Create';
  $string['t_available'] = 'Available Courses to Create';
  $string['blockaction'] = 'Create Course';
  $string['termtitle']   = 'Term';
