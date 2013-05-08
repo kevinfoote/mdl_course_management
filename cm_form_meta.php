@@ -46,7 +46,7 @@ class cm_form_meta extends moodleform {
             $mform->addHelpButton('breadcrumb', 'metabcabout', 'block_course_management');
 
             foreach ($term_list as $term) {
-                $course_menu = course_management::get_course_list_a($term);
+                $course_menu = course_management::get_course_list_meta_a($term);
                 if(count($course_menu) >= 1) {
                     foreach ($course_menu as $id=>$course) {
                         $mform->addElement('advcheckbox', $id, null, $course, null,null);
