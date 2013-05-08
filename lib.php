@@ -270,11 +270,11 @@ abstract class course_management extends cm_b {
             foreach ($ccarray as $cmchild) {
                 $sql = 'SELECT * FROM {course} WHERE idnumber = (SELECT courseshort FROM {cm_course} WHERE id = ?)';
                 $childcourse = $DB->get_record_sql($sql,array($cmchild));
-                $eid = $enrol->add_instance($parent, array($childcourse->id));
+                $eid = $enrol->add_instance($parent, array('customint1'=>$childcourse->id));
             }
             enrol_meta_sync($parent->id);
         } catch (Exception $e) {
-            throw new Exception ('[[ERROR]] faild to add child '.$e,0,$e);
+            throw new Exception ('[[ERROR]] faild to add child course'.$e,0,$e);
         }
     }
 
