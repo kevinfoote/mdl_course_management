@@ -27,11 +27,14 @@
  $string['nocourse']    = 'N/A';
  $string['no_mname']    = 'You must include a Meta Course Name';
  $string['no_bcrumb']   = 'You must include a Breadcrumb';
+ $string['no_subcourse']= 'You must include at leaset one sub-course when creating a MetaCourse';
  $string['pluginname']  = 'Course Management';
  $string['t_meta']      = 'Meta Course Create';
  $string['t_available'] = 'Available Courses to Create';
  $string['blockaction'] = 'Create Course';
  $string['termtitle']   = 'Term';
+ $string['er_bcrumb']   = 'Meta Course Breadcrumb does not meet requirements';
+ $string['er_mname']    = 'Meta Course Identifier does not meet requirements';
 
  // HELP STRING
  $string['metabcabout']        = 'Breadcrumb';

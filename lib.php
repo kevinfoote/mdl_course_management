@@ -115,36 +115,24 @@ abstract class course_management extends cm_b {
 
     /* Validate the string data that comes in from form
      * 
-     * @param $in stdClass form values
-     * @return ?bool?
+     * @param stdClass  // form values
+     * @return array[]  // containing error messages
      */
     public function cm_valid_metareq($input) {
-        global $DB;
-        $retval = false;
-        $title_length  = 45; // allow (letters numbers spaces)
-        $bcrumb_length = 15; // allow (letters numbers)
-        $regex  = '/^[A-Za-z0-9\s]+$/';
-        $regex2 = '/^[A-Za-z0-9]+$/';
         
         // explode the input obj
         $intitle = $input->metaname;
         $incrumb = $input->breadcrumb;
         
-        // first check lengths 
-        if (strlen($intitle) <= int($title_length) && 
-            strlen($incrumb) <= int($bcrumb_length)) {
+        if (!course_management::is_breadcrumb($incrumb)) {
+            $errs[] = course_management::_s('er_bcrumb');
+        }
+   
+        if (!course_management::is_title($intitle)) {
+            $errs[] = course_management::_s('er_mname');
+        }
 
-            // now check / verify string content
-            if (preg_match($regex, $$intitle) && 
-                preg_match($regex2, $incrumb)) { 
-                
-                $retval = true;
-
-            }
-        
-        } 
-
-        return ($retval);
+        return ($errs);
     } 
 
     /* Get array of current terms
@@ -256,6 +244,44 @@ abstract class course_management extends cm_b {
         $sql = 'SELECT id,username FROM {'.$table.'} WHERE courseshort = ?'; 
         $result = $DB->get_records_sql($sql,array($courseshort));
         return ($result);
+    }
+ 
+    /* Verify breadcrumb input 
+     * 
+     * @param String   // breadcrumb string 
+     * @return bool
+     */
+    private static function is_breadcrumb($str) {
+        $retval = false;
+
+        $length = 15;
+        $regex  = '/^[A-Za-z0-9]+$/';
+
+        if (strlen($str) <= $length) {
+            if (preg_match($regex, $str)) {
+                $retval = true;
+            }
+        }
+        return ($retval);
+    }
+
+    /* Verify title input 
+     * 
+     * @param String   // title string 
+     * @return bool
+     */
+    private static function is_title($str) {
+        $retval = false;
+
+        $length = 45;
+        $regex  = '/^[A-Za-z0-9\s]+$/';
+
+        if (strlen($str) <= $length) {
+            if (preg_match($regex, $str)) {
+                $retval = true;
+            }
+        }
+        return ($retval);
     }
     
     private static function do_enrol_users($pop, $id) {

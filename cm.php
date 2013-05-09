@@ -110,10 +110,14 @@ if ($cfm2_data = $cmf2->get_data()) {
     if (count($child_cmrecords) < 1) {
         $warnings[] = course_management::_s('no_subcourse');
     }
+ 
+    $vreport = course_management::cm_valid_metareq($cfm2_data);
      
+    foreach ($vreport as $item) {
+        $warnings[] = $item;
+    }
 
-    if (empty($warnings) && course_management::cm_valid_metareq($cfm2_data)) { 
-    //if (empty($warnings)) {
+    if (empty($warnings)) {
 
         $metareq = new stdClass;
         $metareq->titlestring  = $cfm2_data->metaname;
