@@ -100,20 +100,24 @@ if ($cfm2_data = $cmf2->get_data()) {
         $warnings[] = course_management::_s('no_bcrumb'); 
     }
 
-    //if (empty($warnings) && course_management::cm_valid_metareq($cfm2_data)) { 
-    if (empty($warnings)) {
+    // collect all the child coursees selected
+    foreach ($cfm2_data as $id=>$val) {
+        if ($val == 1 && is_int($id)) {
+            $child_cmrecords[] = $id; 
+        }   
+    }
+
+    if (count($child_cmrecords) < 1) {
+        $warnings[] = course_management::_s('no_subcourse');
+    }
+     
+
+    if (empty($warnings) && course_management::cm_valid_metareq($cfm2_data)) { 
+    //if (empty($warnings)) {
 
         $metareq = new stdClass;
-
         $metareq->titlestring  = $cfm2_data->metaname;
         $metareq->breadcrumb   = $cfm2_data->breadcrumb; 
-
-        foreach ($cfm2_data as $id=>$val) {
-            if ($val == 1 && is_int($id)) {
-                $child_cmrecords[] = $id; 
-            }   
-        }
-
         $metareq->childarray  = $child_cmrecords;
 
         if (!$CM_DEBUG) {

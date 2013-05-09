@@ -118,9 +118,33 @@ abstract class course_management extends cm_b {
      * @param $in stdClass form values
      * @return ?bool?
      */
-    public function cm_valid_metareq($in) {
+    public function cm_valid_metareq($input) {
         global $DB;
-        // internal to check string data
+        $retval = false;
+        $title_length  = 45; // allow (letters numbers spaces)
+        $bcrumb_length = 15; // allow (letters numbers)
+        $regex  = '/^[A-Za-z0-9\s]+$/';
+        $regex2 = '/^[A-Za-z0-9]+$/';
+        
+        // explode the input obj
+        $intitle = $input->metaname;
+        $incrumb = $input->breadcrumb;
+        
+        // first check lengths 
+        if (strlen($intitle) <= int($title_length) && 
+            strlen($incrumb) <= int($bcrumb_length)) {
+
+            // now check / verify string content
+            if (preg_match($regex, $$intitle) && 
+                preg_match($regex2, $incrumb)) { 
+                
+                $retval = true;
+
+            }
+        
+        } 
+
+        return ($retval);
     } 
 
     /* Get array of current terms
